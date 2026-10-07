@@ -1,0 +1,1 @@
+Draw the classes behind paying for an order. A Customer places any number of Orders. Each Order holds one or more OrderLines and pays with one or more payment methods. PaymentMethod is abstract: it can authorise and refund an amount. Card, BankTransfer and Wallet are kinds of PaymentMethod. Group the ordering classes and the payment classes.

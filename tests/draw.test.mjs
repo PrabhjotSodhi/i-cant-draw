@@ -109,3 +109,42 @@ describe('draw: crayon label outline', () => {
     expect(svg).toContain('<rect x="330" y="81" width="40" height="18"');
   });
 });
+
+describe('draw: class kind', () => {
+  const classSpec = { template: 'flow', nodes: [
+    { id: 'tool', kind: 'class', label: 'QueryTool', stereotype: 'abstract', attributes: ['rowCap: number', 'items: List<Stage>'], methods: ['execute(sql)'] }],
+    edges: [], groups: [{ id: 'z', label: 'Tools', contains: ['tool'], tone: 'orange' }] };
+  const node = { id: 'tool', x: 40, y: 50, width: 240, height: 60 + 64 + 38, lines: [],
+    rows: [{ y: 79, text: 'rowCap: number', part: 'attribute' }, { y: 105, text: 'items: List<Stage>', part: 'attribute' }, { y: 143, text: 'execute(sql)', part: 'method' }],
+    dividers: [60, 124] };
+  const classLayout = () => ({ width: 400, height: 260, edges: [], nodes: [{ ...node }],
+    groups: [{ id: 'z', x: 0, y: 0, width: 320, height: 240, depth: 0, spec: classSpec.groups[0] }] });
+  const offsetX = (1920 - 400) / 2;
+  for (const name of ['quiet', 'crayon', 'riso', 'whiteboard', 'notebook', 'watercolour']) {
+    const style = loadStyle(name);
+    const { svg, geometry } = draw(classLayout(), classSpec, style);
+    it(`${name}: centres the name and stereotype in the header and left-aligns each row`, () => {
+      expect(svg).toMatch(/x="160" y="90"[^>]*text-anchor="middle"[^>]*>QueryTool</);
+      expect(svg).toMatch(/x="160" y="69"[^>]*text-anchor="middle"[^>]*>«abstract»</);
+      expect(svg).toMatch(/x="56" y="129"[^>]*text-anchor="start"[^>]*>rowCap: number</);
+      expect(svg).toContain('>items: List&lt;Stage&gt;</text>');
+      expect(svg).toMatch(/x="56" y="193"[^>]*text-anchor="start"[^>]*>execute\(sql\)</);
+    });
+    it(`${name}: gives every row its own text geometry inside the card`, () => {
+      const texts = geometry.filter(g => g.owner === 'tool' && g.kind === 'text');
+      expect(texts).toHaveLength(5);
+      const row = texts.find(t => Math.abs(t.y + t.height / 2 - (129 + 40)) < 0.01);
+      expect(row.x).toBe(56 + offsetX);
+      for (const t of texts) {
+        expect(t.x).toBeGreaterThanOrEqual(40 + offsetX);
+        expect(t.x + t.width).toBeLessThanOrEqual(280 + offsetX);
+      }
+    });
+  }
+  it('fails the collision gate when an edge label sits on a row', () => {
+    const l = classLayout();
+    l.edges = [{ index: 0, sections: [{ startPoint: { x: 0, y: 0 }, endPoint: { x: 0, y: 10 }, bendPoints: [] }], labels: [{ text: 'uses', x: 60, y: 138, width: 40, height: 18 }] }];
+    const { geometry } = draw(l, { ...classSpec, edges: [{ from: 'tool', to: 'tool' }] }, quiet);
+    expect(checkCollisions(geometry).some(c => c.a.startsWith('text:tool') || c.b.startsWith('text:tool'))).toBe(true);
+  });
+});

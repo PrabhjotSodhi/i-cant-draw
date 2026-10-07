@@ -1,0 +1,25 @@
+{
+  "template": "class",
+  "title": "Payments, classes",
+  "nodes": [
+    { "id": "customer", "kind": "class", "label": "Customer", "attributes": ["id: CustomerId", "email: string"], "methods": ["placeOrder(cart)"], "row": 0, "col": 0 },
+    { "id": "order", "kind": "class", "label": "Order", "attributes": ["id: OrderId", "total: Money", "status: OrderStatus"], "methods": ["pay(method)", "cancel()"], "row": 0, "col": 1 },
+    { "id": "order-line", "kind": "class", "label": "OrderLine", "attributes": ["sku: string", "quantity: number"], "methods": ["subtotal()"], "row": 1, "col": 1 },
+    { "id": "payment-method", "kind": "class", "label": "PaymentMethod", "stereotype": "abstract", "attributes": ["holder: string"], "methods": ["authorise(amount)", "refund(amount)"], "row": 0, "col": 3 },
+    { "id": "card", "kind": "class", "label": "Card", "attributes": ["last4: string", "expiry: Date"], "methods": ["authorise(amount)"], "row": 1, "col": 2 },
+    { "id": "bank-transfer", "kind": "class", "label": "BankTransfer", "attributes": ["iban: string"], "methods": ["authorise(amount)"], "row": 1, "col": 3 },
+    { "id": "wallet", "kind": "class", "label": "Wallet", "attributes": ["provider: string"], "methods": ["authorise(amount)"], "row": 1, "col": 4 }
+  ],
+  "edges": [
+    { "from": "customer", "to": "order", "label": "places", "multiplicity": ["1", "0..*"] },
+    { "from": "order", "to": "order-line", "label": "holds", "multiplicity": ["1", "1..*"] },
+    { "from": "order", "to": "payment-method", "label": "pays with", "multiplicity": ["1", "1..*"] },
+    { "from": "card", "to": "payment-method", "relation": "inherits", "label": "is a kind of" },
+    { "from": "bank-transfer", "to": "payment-method", "relation": "inherits" },
+    { "from": "wallet", "to": "payment-method", "relation": "inherits" }
+  ],
+  "groups": [
+    { "id": "ordering", "label": "Ordering", "contains": ["customer", "order", "order-line"], "tone": "blue" },
+    { "id": "payments", "label": "Payments", "contains": ["payment-method", "card", "bank-transfer", "wallet"], "tone": "orange" }
+  ]
+}
