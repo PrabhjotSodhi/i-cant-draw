@@ -214,3 +214,57 @@ describe('flowLayout: loop-back lines under a zone', () => {
     });
   }
 });
+
+import { lintLayout } from '../scripts/layout-lint.mjs';
+const rules = findings => [...new Set(findings.map(f => f.rule))];
+
+describe('flowLayout: review fixes', () => {
+  it('breaks a cycle without dropping edges outside it', () => {
+    const s = { template: 'flow', nodes: ['a', 'b', 'c', 'd', 'e'].map(id => ({ id, label: id.toUpperCase() })),
+      edges: [{ from: 'a', to: 'b' }, { from: 'b', to: 'c' }, { from: 'c', to: 'a' }, { from: 'd', to: 'e' }] };
+    const l = flowLayout(s, quiet);
+    const n = id => l.nodes.find(x => x.id === id);
+    expect(n('e').x).toBeGreaterThan(n('d').x);
+    expect(n('d').y + n('d').height / 2).toBeCloseTo(n('e').y + n('e').height / 2, 6);
+  });
+  it('routes a same-column skip around the card in between', () => {
+    const s = { template: 'flow', nodes: [card('a', 0, 0), card('x', 1, 0), card('b', 2, 0)], edges: [{ from: 'a', to: 'b' }] };
+    const l = flowLayout(s, quiet);
+    expect(lintLayout(l, s)).toEqual([]);
+  });
+  it('spreads a same-column edge with the other edges on its side', () => {
+    const s = { template: 'flow', nodes: [card('s', 0, 0), card('t', 1, 1), card('d', 3, 0)], edges: [{ from: 's', to: 't' }, { from: 's', to: 'd' }] };
+    const l = flowLayout(s, quiet);
+    const xs = [edgeTo(l, s, 's', 't'), edgeTo(l, s, 's', 'd')].map(e => e.sections[0].startPoint.x).sort((m, n) => m - n);
+    expect(xs[1] - xs[0]).toBeCloseTo(12, 6);
+  });
+  it('reserves room above a row for an over-the-top detour and its label', () => {
+    for (const row of [0, 1]) {
+      const nodes = [card('a', row, 0), card('b', row, 1), card('c', row, 2)];
+      if (row === 1) nodes.push(card('q', 0, 1));
+      const s = { template: 'flow', nodes, edges: [{ from: 'a', to: 'b' }, { from: 'a', to: 'c', label: 'skip ahead' }] };
+      const l = flowLayout(s, quiet);
+      const label = edgeTo(l, s, 'a', 'c').labels[0];
+      expect(label.y, `row ${row}`).toBeGreaterThanOrEqual(0);
+      expect(checkCollisions(draw(l, s, quiet).geometry), `row ${row}`).toEqual([]);
+    }
+  });
+  it('flags fan-in stubs that run in line with fan-out branches', () => {
+    const s = { template: 'flow', nodes: [card('s', 0, 0), card('b1', 1, 0), card('b2', 2, 0), card('b3', 3, 0), card('t1', 1, 1), card('t2', 2, 1), card('t3', 3, 1)],
+      edges: [...['t1', 't2', 't3'].map(t => ({ from: 's', to: t })), ...['b1', 'b2', 'b3'].map(b => ({ from: b, to: 't1' }))] };
+    expect(rules(lintLayout(flowLayout(s, quiet), s))).toContain('edge-overlap');
+  });
+  it('keeps fan-in and fan-out trunks into one column apart', () => {
+    const s = { template: 'flow', nodes: [card('s', 3, 0), card('b1', 0, 0), card('b2', 1, 0), card('b3', 2, 0), card('t1', 0, 1), card('t2', 1, 1), card('t3', 2, 1)],
+      edges: [...['t1', 't2', 't3'].map(t => ({ from: 's', to: t })), ...['b1', 'b2', 'b3'].map(b => ({ from: b, to: 't1' }))] };
+    const l = flowLayout(s, quiet);
+    expect(lintLayout(l, s).filter(f => f.rule === 'trunk-overlap')).toEqual([]);
+    expect(checkCollisions(draw(l, s, quiet).geometry)).toEqual([]);
+  });
+  it('gives fan branch labels room', () => {
+    const s = { template: 'flow', nodes: [card('s', 1, 0), card('t1', 0, 1), card('t2', 1, 1), card('t3', 2, 1)],
+      edges: [{ from: 's', to: 't1', label: 'high priority work' }, { from: 's', to: 't2' }, { from: 's', to: 't3' }] };
+    const l = flowLayout(s, quiet);
+    expect(checkCollisions(draw(l, s, quiet).geometry)).toEqual([]);
+  });
+});
