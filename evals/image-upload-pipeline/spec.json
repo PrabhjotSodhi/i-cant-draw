@@ -1,0 +1,201 @@
+{
+  "template": "flow",
+  "style": "quiet",
+  "title": "Image upload pipeline",
+  "nodes": [
+    {
+      "id": "manifest",
+      "label": "Upload manifest",
+      "row": 1,
+      "col": 0,
+      "icon": "file"
+    },
+    {
+      "id": "originals",
+      "label": "Original images",
+      "row": 0,
+      "col": 1,
+      "icon": "database"
+    },
+    {
+      "id": "resizer",
+      "label": "Resize worker",
+      "row": 1,
+      "col": 1,
+      "subtitle": "makes every image size"
+    },
+    {
+      "id": "overlays",
+      "label": "Overlay builder",
+      "row": 2,
+      "col": 1,
+      "subtitle": "combines brand assets"
+    },
+    {
+      "id": "logos",
+      "label": "Brand logos",
+      "row": 2,
+      "col": 0,
+      "icon": "database"
+    },
+    {
+      "id": "fonts",
+      "label": "Font library",
+      "row": 3,
+      "col": 0,
+      "icon": "database"
+    },
+    {
+      "id": "profiles",
+      "label": "Colour profiles",
+      "row": 4,
+      "col": 0,
+      "icon": "database"
+    },
+    {
+      "id": "variants",
+      "label": "Image variants",
+      "row": 1,
+      "col": 2
+    },
+    {
+      "id": "check",
+      "label": "Image check",
+      "row": 1,
+      "col": 3,
+      "kind": "decision"
+    },
+    {
+      "id": "reencode",
+      "label": "Re-encode step",
+      "row": 2,
+      "col": 3
+    },
+    {
+      "id": "ready",
+      "label": "Variants ready",
+      "row": 1,
+      "col": 4
+    },
+    {
+      "id": "moderator",
+      "label": "Moderator review",
+      "row": 1,
+      "col": 5,
+      "icon": "person"
+    },
+    {
+      "id": "published",
+      "label": "Published images",
+      "row": 2,
+      "col": 5,
+      "subtitle": "served from the CDN"
+    }
+  ],
+  "edges": [
+    {
+      "from": "originals",
+      "to": "resizer",
+      "label": "read the originals",
+      "style": "dashed"
+    },
+    {
+      "from": "manifest",
+      "to": "resizer",
+      "main": true
+    },
+    {
+      "from": "resizer",
+      "to": "variants",
+      "main": true
+    },
+    {
+      "from": "logos",
+      "to": "overlays",
+      "style": "dashed"
+    },
+    {
+      "from": "fonts",
+      "to": "overlays",
+      "style": "dashed"
+    },
+    {
+      "from": "profiles",
+      "to": "overlays",
+      "style": "dashed"
+    },
+    {
+      "from": "overlays",
+      "to": "resizer",
+      "label": "apply overlays",
+      "style": "dashed"
+    },
+    {
+      "from": "variants",
+      "to": "check",
+      "main": true
+    },
+    {
+      "from": "check",
+      "to": "reencode",
+      "label": "check failed"
+    },
+    {
+      "from": "reencode",
+      "to": "variants",
+      "label": "encode again"
+    },
+    {
+      "from": "check",
+      "to": "ready",
+      "label": "check passed",
+      "main": true
+    },
+    {
+      "from": "ready",
+      "to": "moderator",
+      "main": true
+    },
+    {
+      "from": "moderator",
+      "to": "published",
+      "main": true
+    }
+  ],
+  "groups": [
+    {
+      "id": "processing",
+      "label": "Processing",
+      "contains": [
+        "originals",
+        "manifest",
+        "resizer",
+        "variants",
+        "logos",
+        "fonts",
+        "profiles",
+        "overlays"
+      ],
+      "tone": "purple"
+    },
+    {
+      "id": "quality",
+      "label": "Quality control",
+      "contains": [
+        "check",
+        "reencode",
+        "ready"
+      ],
+      "tone": "orange"
+    },
+    {
+      "id": "human",
+      "label": "Human review",
+      "contains": [
+        "moderator",
+        "published"
+      ],
+      "tone": "green"
+    }
+  ]
+}

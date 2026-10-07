@@ -1,0 +1,176 @@
+{
+  "template": "hub",
+  "title": "Uber ride dispatch, circa 2015",
+  "slots": {
+    "center": "ringpop",
+    "left": [
+      "rider",
+      "demand"
+    ],
+    "right": [
+      "geosupply",
+      "geodemand"
+    ],
+    "top": [
+      "eta",
+      "maps",
+      "riak"
+    ],
+    "bottom": [
+      "supply",
+      "driver"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "disco",
+      "label": "DISCO",
+      "subtitle": "matches riders to drivers"
+    },
+    {
+      "id": "rider",
+      "label": "Rider app",
+      "subtitle": "asks for a ride",
+      "icon": "monitor"
+    },
+    {
+      "id": "demand",
+      "label": "Demand service",
+      "subtitle": "requests and their requirements"
+    },
+    {
+      "id": "geosupply",
+      "label": "Driver locations",
+      "subtitle": "S2 cells, updated every 4 s",
+      "icon": "table"
+    },
+    {
+      "id": "geodemand",
+      "label": "Request locations",
+      "subtitle": "S2 cells of open requests",
+      "icon": "table"
+    },
+    {
+      "id": "eta",
+      "label": "Routing and ETA",
+      "subtitle": "road travel time to pickup"
+    },
+    {
+      "id": "maps",
+      "label": "Maps",
+      "subtitle": "streets, past travel times",
+      "icon": "documents"
+    },
+    {
+      "id": "riak",
+      "label": "Dispatch state",
+      "subtitle": "kept in Riak",
+      "icon": "database"
+    },
+    {
+      "id": "supply",
+      "label": "Supply service",
+      "subtitle": "each driver's state"
+    },
+    {
+      "id": "driver",
+      "label": "Driver app",
+      "subtitle": "accepts or declines",
+      "icon": "monitor"
+    }
+  ],
+  "edges": [
+    {
+      "from": "rider",
+      "to": "demand",
+      "label": "request a ride",
+      "main": true
+    },
+    {
+      "from": "demand",
+      "to": "disco",
+      "label": "pickup, car type",
+      "main": true
+    },
+    {
+      "from": "disco",
+      "to": "geosupply",
+      "label": "drivers near pickup",
+      "both": true,
+      "main": true
+    },
+    {
+      "from": "disco",
+      "to": "geodemand",
+      "label": "where demand is"
+    },
+    {
+      "from": "disco",
+      "to": "eta",
+      "label": "rank by ETA",
+      "both": true,
+      "main": true
+    },
+    {
+      "from": "maps",
+      "to": "eta",
+      "label": "road graph"
+    },
+    {
+      "from": "disco",
+      "to": "riak",
+      "label": "state",
+      "style": "dashed"
+    },
+    {
+      "from": "disco",
+      "to": "supply",
+      "label": "offer the ride",
+      "main": true
+    },
+    {
+      "from": "supply",
+      "to": "driver",
+      "label": "ride offer",
+      "main": true
+    }
+  ],
+  "groups": [
+    {
+      "id": "ringpop",
+      "label": "Ringpop shards",
+      "contains": [
+        "disco"
+      ],
+      "tone": "blue",
+      "boundary": "dashed"
+    },
+    {
+      "id": "riderside",
+      "label": "Rider side",
+      "contains": [
+        "rider",
+        "demand"
+      ],
+      "tone": "purple"
+    },
+    {
+      "id": "geo",
+      "label": "Geospatial index",
+      "contains": [
+        "geosupply",
+        "geodemand"
+      ],
+      "tone": "orange"
+    },
+    {
+      "id": "driverside",
+      "label": "Driver side",
+      "contains": [
+        "supply",
+        "driver"
+      ],
+      "tone": "green"
+    }
+  ]
+}

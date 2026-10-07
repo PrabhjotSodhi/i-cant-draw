@@ -1,0 +1,139 @@
+{
+  "template": "flow",
+  "title": "How a RAG chatbot answers a question",
+  "nodes": [
+    {
+      "id": "docs",
+      "label": "Your documents",
+      "subtitle": "PDFs, wiki pages, tickets",
+      "icon": "documents",
+      "row": 0,
+      "col": 0
+    },
+    {
+      "id": "chunk",
+      "label": "Split into chunks",
+      "subtitle": "about 500 words each",
+      "row": 0,
+      "col": 1
+    },
+    {
+      "id": "store",
+      "label": "Vector store",
+      "subtitle": "one vector per chunk",
+      "icon": "database",
+      "row": 0,
+      "col": 2
+    },
+    {
+      "id": "question",
+      "label": "A question",
+      "subtitle": "how do I reset my password?",
+      "icon": "person",
+      "row": 1,
+      "col": 0
+    },
+    {
+      "id": "embed",
+      "label": "Turn it into a vector",
+      "subtitle": "same model as the chunks",
+      "row": 1,
+      "col": 1
+    },
+    {
+      "id": "search",
+      "label": "Find similar chunks",
+      "subtitle": "closest 5 by meaning",
+      "row": 1,
+      "col": 2
+    },
+    {
+      "id": "prompt",
+      "label": "Build the prompt",
+      "subtitle": "question plus those chunks",
+      "row": 1,
+      "col": 3
+    },
+    {
+      "id": "llm",
+      "label": "Language model",
+      "subtitle": "answers from the chunks",
+      "icon": "cloud",
+      "row": 2,
+      "col": 3
+    },
+    {
+      "id": "answer",
+      "label": "Answer",
+      "subtitle": "with links to sources",
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "edges": [
+    {
+      "from": "docs",
+      "to": "chunk"
+    },
+    {
+      "from": "chunk",
+      "to": "store",
+      "label": "embed and save"
+    },
+    {
+      "from": "question",
+      "to": "embed",
+      "main": true
+    },
+    {
+      "from": "embed",
+      "to": "search",
+      "main": true
+    },
+    {
+      "from": "store",
+      "to": "search",
+      "label": "top 5 chunks"
+    },
+    {
+      "from": "search",
+      "to": "prompt",
+      "main": true
+    },
+    {
+      "from": "prompt",
+      "to": "llm",
+      "main": true
+    },
+    {
+      "from": "llm",
+      "to": "answer",
+      "main": true
+    }
+  ],
+  "groups": [
+    {
+      "id": "ahead",
+      "label": "Done once, ahead of time",
+      "contains": [
+        "docs",
+        "chunk",
+        "store"
+      ],
+      "tone": "green"
+    },
+    {
+      "id": "live",
+      "label": "Every time someone asks",
+      "contains": [
+        "question",
+        "embed",
+        "search",
+        "prompt",
+        "llm",
+        "answer"
+      ],
+      "tone": "blue"
+    }
+  ]
+}

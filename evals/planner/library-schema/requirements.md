@@ -1,0 +1,1 @@
+Draw the database for a public library. The library keeps books, and each book can have several authors, and an author can write several books. The library owns copies of each book. Members borrow copies, and every loan records the member, the copy, when it was taken out and when it is due back. A member can place a hold on a book when no copy is free.

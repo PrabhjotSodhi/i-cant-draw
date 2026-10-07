@@ -17,7 +17,7 @@ jobs:
   check:
     name: Check
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
 
@@ -30,3 +30,6 @@ jobs:
 
       - name: Test
         run: npm test
+
+      - name: Eval
+        run: npm run eval

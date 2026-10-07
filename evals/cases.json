@@ -1,0 +1,84 @@
+{
+  "cases": [
+    {
+      "dir": "ci-pipeline"
+    },
+    {
+      "dir": "rag-pipeline"
+    },
+    {
+      "dir": "image-upload-pipeline"
+    },
+    {
+      "dir": "mcp-cluster"
+    },
+    {
+      "dir": "expense-check-flow"
+    },
+    {
+      "dir": "ci-vertical"
+    },
+    {
+      "dir": "upload-sequence"
+    },
+    {
+      "dir": "unconnected-group"
+    },
+    {
+      "dir": "deployment-hub"
+    },
+    {
+      "dir": "components-grid"
+    },
+    {
+      "dir": "state-build"
+    },
+    {
+      "dir": "uber-dispatch"
+    },
+    {
+      "dir": "uber-trip"
+    },
+    {
+      "dir": "netflix-encoding"
+    },
+    {
+      "dir": "netflix-play"
+    },
+    {
+      "dir": "rag-chatbot"
+    },
+    {
+      "dir": "coding-agent"
+    },
+    {
+      "dir": "this-repo"
+    },
+    {
+      "dir": "checkout-hld"
+    },
+    {
+      "dir": "checkout-order"
+    },
+    {
+      "dir": "checkout-statuses"
+    },
+    {
+      "dir": "research-agents"
+    },
+    {
+      "dir": "payments-classes"
+    },
+    {
+      "dir": "shop-schema"
+    }
+  ],
+  "styles": [
+    "quiet",
+    "crayon",
+    "riso",
+    "whiteboard",
+    "notebook",
+    "watercolour"
+  ]
+}

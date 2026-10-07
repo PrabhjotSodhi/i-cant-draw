@@ -1,0 +1,141 @@
+{
+  "template": "flow",
+  "title": "Plan: a multi-agent research assistant",
+  "nodes": [
+    {
+      "id": "question",
+      "label": "Research question",
+      "subtitle": "from the user",
+      "icon": "person",
+      "row": 1,
+      "col": 0
+    },
+    {
+      "id": "planner",
+      "label": "Planner agent",
+      "subtitle": "splits it into 3 parts",
+      "row": 1,
+      "col": 1
+    },
+    {
+      "id": "r1",
+      "label": "Researcher 1",
+      "subtitle": "searches the web",
+      "row": 0,
+      "col": 2
+    },
+    {
+      "id": "r2",
+      "label": "Researcher 2",
+      "subtitle": "reads papers",
+      "row": 1,
+      "col": 2
+    },
+    {
+      "id": "r3",
+      "label": "Researcher 3",
+      "subtitle": "checks the numbers",
+      "row": 2,
+      "col": 2
+    },
+    {
+      "id": "writer",
+      "label": "Writer agent",
+      "subtitle": "merges the findings",
+      "row": 1,
+      "col": 3
+    },
+    {
+      "id": "good",
+      "label": "Good enough?",
+      "kind": "decision",
+      "row": 1,
+      "col": 4
+    },
+    {
+      "id": "report",
+      "label": "Final report",
+      "subtitle": "with sources",
+      "icon": "file",
+      "row": 1,
+      "col": 5
+    },
+    {
+      "id": "deeper",
+      "label": "Dig deeper",
+      "subtitle": "the planner names the gap",
+      "row": 2,
+      "col": 4
+    }
+  ],
+  "edges": [
+    {
+      "from": "question",
+      "to": "planner",
+      "main": true
+    },
+    {
+      "from": "planner",
+      "to": "r1"
+    },
+    {
+      "from": "planner",
+      "to": "r2",
+      "main": true
+    },
+    {
+      "from": "planner",
+      "to": "r3"
+    },
+    {
+      "from": "r1",
+      "to": "writer"
+    },
+    {
+      "from": "r2",
+      "to": "writer",
+      "main": true
+    },
+    {
+      "from": "r3",
+      "to": "writer"
+    },
+    {
+      "from": "writer",
+      "to": "good",
+      "main": true
+    },
+    {
+      "from": "good",
+      "to": "report",
+      "label": "yes",
+      "main": true
+    },
+    {
+      "from": "good",
+      "to": "deeper",
+      "label": "no"
+    },
+    {
+      "from": "deeper",
+      "to": "r3",
+      "label": "one more round"
+    }
+  ],
+  "groups": [
+    {
+      "id": "team",
+      "label": "Agent team",
+      "contains": [
+        "planner",
+        "r1",
+        "r2",
+        "r3",
+        "writer",
+        "good",
+        "deeper"
+      ],
+      "tone": "purple"
+    }
+  ]
+}
