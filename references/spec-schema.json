@@ -1,0 +1,453 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Diagram spec",
+  "description": "flow and hub specs need nodes and edges; hub also needs slots. sequence specs need actors and messages.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "template": {
+      "enum": [
+        "flow",
+        "hub",
+        "state",
+        "sequence",
+        "class",
+        "schema"
+      ],
+      "default": "flow",
+      "description": "flow: a grid read left to right. hub: one system in the middle with neighbours on four sides. sequence: messages over time. state: the statuses one thing moves through. schema: database tables and the keys that join them. class: classes and how they relate."
+    },
+    "style": {
+      "enum": [
+        "quiet",
+        "crayon",
+        "riso",
+        "whiteboard",
+        "notebook",
+        "watercolour"
+      ],
+      "default": "crayon",
+      "description": "crayon (default) is the hand-drawn look; quiet is the plain look for formal documents."
+    },
+    "title": {
+      "type": "string",
+      "description": "Diagram name, used for context and file naming. It is not drawn."
+    },
+    "slots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "center"
+      ],
+      "description": "hub only. center names a node, or a group chain that ends in one node.",
+      "properties": {
+        "center": {
+          "type": "string"
+        },
+        "left": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "right": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "top": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "bottom": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 30
+          },
+          "subtitle": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Wraps to two lines at most."
+          },
+          "kind": {
+            "enum": [
+              "card",
+              "decision",
+              "note",
+              "actor",
+              "state",
+              "start",
+              "end",
+              "class",
+              "table"
+            ],
+            "default": "card"
+          },
+          "attributes": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "string"
+            },
+            "description": "class only. One row each, such as \"total: Money\". Keep the ones the diagram is about."
+          },
+          "methods": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "string"
+            },
+            "description": "class only. One row each, such as \"pay(method)\"."
+          },
+          "stereotype": {
+            "type": "string",
+            "description": "class only. Drawn in guillemets above the name, such as abstract."
+          },
+          "icon": {
+            "enum": [
+              "monitor",
+              "cylinder",
+              "cloud",
+              "person",
+              "actor",
+              "database",
+              "documents",
+              "file",
+              "table"
+            ]
+          },
+          "row": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "flow only. Set both row and col, or neither."
+          },
+          "col": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "columns": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 12,
+            "description": "table only. List the key columns first; past 12, end with a column named \"+ N more\" and type \"\".",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "type"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "The SQL type, such as bigint or text."
+                },
+                "key": {
+                  "enum": [
+                    "PK",
+                    "FK"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "from",
+          "to"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 40,
+            "description": "Names what arrives at the target."
+          },
+          "style": {
+            "enum": [
+              "solid",
+              "dashed"
+            ],
+            "default": "solid"
+          },
+          "main": {
+            "type": "boolean",
+            "description": "Marks the main path; drawn heavier."
+          },
+          "both": {
+            "type": "boolean",
+            "description": "Arrowheads on both ends."
+          },
+          "annotation": {
+            "type": "boolean",
+            "description": "flow only. Commentary between neighbouring cells, drawn without an arrowhead."
+          },
+          "relation": {
+            "enum": [
+              "uses",
+              "inherits"
+            ],
+            "default": "uses",
+            "description": "class only. inherits points from the child to the parent and ends in a hollow triangle. uses ends in an arrow."
+          },
+          "multiplicity": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "string"
+            },
+            "description": "class only. Text beside the start and end of the line, such as [\"1\", \"0..*\"]."
+          },
+          "fromColumn": {
+            "type": "string",
+            "description": "schema only. The FK column in the from table."
+          },
+          "toColumn": {
+            "type": "string",
+            "description": "schema only. The column it points at in the to table, usually its PK."
+          },
+          "ends": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "enum": [
+                "one",
+                "many"
+              ]
+            },
+            "description": "schema only. How many rows sit at the from end, then the to end, such as [\"many\", \"one\"]. Many-to-many needs a junction table."
+          }
+        }
+      }
+    },
+    "groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "contains"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "contains": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "description": "Node ids and group ids."
+          },
+          "tone": {
+            "enum": [
+              "grey",
+              "blue",
+              "green",
+              "orange",
+              "red",
+              "purple"
+            ]
+          },
+          "boundary": {
+            "enum": [
+              "solid",
+              "dashed"
+            ],
+            "default": "solid"
+          }
+        }
+      }
+    },
+    "actors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "label": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "card",
+              "actor"
+            ]
+          },
+          "category": {
+            "enum": [
+              "input",
+              "data-source",
+              "agent",
+              "process",
+              "decision",
+              "human",
+              "output",
+              "error"
+            ],
+            "description": "human draws a person glyph."
+          },
+          "icon": {
+            "enum": [
+              "monitor",
+              "cylinder",
+              "cloud",
+              "person",
+              "actor",
+              "database",
+              "documents",
+              "file",
+              "table"
+            ]
+          },
+          "subtitle": {
+            "type": "string",
+            "maxLength": 40,
+            "description": "One short line under the actor's name."
+          }
+        }
+      }
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "from",
+          "to"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "sync",
+              "async",
+              "return"
+            ],
+            "default": "sync"
+          }
+        }
+      }
+    },
+    "fragments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "regions"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "tone": {
+            "enum": [
+              "grey",
+              "blue",
+              "green",
+              "orange",
+              "red",
+              "purple"
+            ],
+            "description": "Colour of the frame's zone, tag and guard. Default purple."
+          },
+          "kind": {
+            "enum": [
+              "alt",
+              "opt",
+              "loop"
+            ]
+          },
+          "regions": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "items": {
+              "type": "object",
+              "required": [
+                "messages"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "guard": {
+                  "type": "string"
+                },
+                "messages": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "description": "Indices into messages, contiguous."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
