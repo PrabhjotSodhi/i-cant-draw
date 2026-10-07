@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
 import { lintLayout } from '../scripts/layout-lint.mjs';
 import { flowLayout } from '../scripts/templates/flow.mjs';
+import { hubLayout } from '../scripts/templates/hub.mjs';
 import { loadStyle } from '../scripts/styles/index.mjs';
 
 const quiet = loadStyle('quiet');
@@ -95,8 +96,14 @@ describe('lintLayout', () => {
     spec.nodes.push({ id: 'd', label: 'D', row: 1, col: 2 });
     expect(rules(lintLayout(layout, spec))).toContain('through-card');
   });
+  it('flags uneven widths in a hub stack', () => {
+    const spec = fixture('hub-deployment');
+    const layout = hubLayout(spec, quiet);
+    layout.nodes.find(n => n.id === 'secrets').width -= 10;
+    expect(rules(lintLayout(layout, spec))).toEqual(['stack-width']);
+  });
   it('passes both template fixtures as rendered', () => {
-    for (const [name, fn] of [['flow-components', flowLayout]]) {
+    for (const [name, fn] of [['hub-deployment', hubLayout], ['flow-components', flowLayout]]) {
       const spec = fixture(name);
       expect(lintLayout(fn(spec, quiet), spec), name).toEqual([]);
     }
