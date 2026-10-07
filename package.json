@@ -1,0 +1,14 @@
+{
+  "name": "i-cant-draw",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Hand-drawn architecture diagrams for people who cannot draw. A Claude Code plugin.",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^3.1.1"
+  },
+  "private": true,
+  "license": "MIT"
+}
