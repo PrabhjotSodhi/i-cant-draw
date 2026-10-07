@@ -1,0 +1,170 @@
+{
+  "template": "state",
+  "title": "Uber trip statuses, from the public Riders API",
+  "nodes": [
+    {
+      "id": "start",
+      "kind": "start",
+      "row": 0,
+      "col": 0
+    },
+    {
+      "id": "processing",
+      "kind": "state",
+      "label": "Finding a driver",
+      "subtitle": "processing",
+      "row": 0,
+      "col": 1
+    },
+    {
+      "id": "accepted",
+      "kind": "state",
+      "label": "Driver on the way",
+      "subtitle": "accepted",
+      "row": 0,
+      "col": 2
+    },
+    {
+      "id": "arriving",
+      "kind": "state",
+      "label": "Driver arriving",
+      "subtitle": "arriving",
+      "row": 0,
+      "col": 3
+    },
+    {
+      "id": "progress",
+      "kind": "state",
+      "label": "On the trip",
+      "subtitle": "in_progress",
+      "row": 0,
+      "col": 4
+    },
+    {
+      "id": "completed",
+      "kind": "state",
+      "label": "Completed",
+      "subtitle": "completed",
+      "row": 0,
+      "col": 5
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "row": 0,
+      "col": 6
+    },
+    {
+      "id": "nodrivers",
+      "kind": "state",
+      "label": "No drivers found",
+      "subtitle": "no_drivers_available",
+      "row": 1,
+      "col": 1
+    },
+    {
+      "id": "ridercancel",
+      "kind": "state",
+      "label": "Rider cancelled",
+      "subtitle": "rider_canceled",
+      "row": 1,
+      "col": 2
+    },
+    {
+      "id": "drivercancel",
+      "kind": "state",
+      "label": "Driver cancelled",
+      "subtitle": "driver_canceled",
+      "row": 1,
+      "col": 3
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "processing",
+      "label": "rider requests"
+    },
+    {
+      "from": "processing",
+      "to": "accepted",
+      "label": "driver accepts",
+      "main": true
+    },
+    {
+      "from": "accepted",
+      "to": "arriving",
+      "label": "nears pickup",
+      "main": true
+    },
+    {
+      "from": "arriving",
+      "to": "progress",
+      "label": "rider picked up",
+      "main": true
+    },
+    {
+      "from": "progress",
+      "to": "completed",
+      "label": "trip ends",
+      "main": true
+    },
+    {
+      "from": "completed",
+      "to": "end"
+    },
+    {
+      "from": "processing",
+      "to": "nodrivers",
+      "label": "no match"
+    },
+    {
+      "from": "accepted",
+      "to": "ridercancel",
+      "label": "rider cancels"
+    },
+    {
+      "from": "arriving",
+      "to": "drivercancel",
+      "label": "driver cancels"
+    }
+  ],
+  "groups": [
+    {
+      "id": "pickup",
+      "label": "Before pickup",
+      "contains": [
+        "processing",
+        "accepted",
+        "arriving"
+      ],
+      "tone": "blue"
+    },
+    {
+      "id": "trip",
+      "label": "Riding",
+      "contains": [
+        "progress"
+      ],
+      "tone": "purple"
+    },
+    {
+      "id": "done",
+      "label": "Done",
+      "contains": [
+        "completed"
+      ],
+      "tone": "green"
+    },
+    {
+      "id": "early",
+      "label": "Ended early",
+      "contains": [
+        "nodrivers",
+        "ridercancel",
+        "drivercancel"
+      ],
+      "tone": "red"
+    }
+  ]
+}

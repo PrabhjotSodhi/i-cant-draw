@@ -1,0 +1,205 @@
+{
+  "template": "flow",
+  "style": "quiet",
+  "title": "RAG pipeline",
+  "nodes": [
+    {
+      "id": "dsl",
+      "label": "Domain specific language",
+      "row": 0,
+      "col": 0,
+      "subtitle": "DSL"
+    },
+    {
+      "id": "specs",
+      "label": "Specifications and docs",
+      "row": 2,
+      "col": 0
+    },
+    {
+      "id": "preprocessing",
+      "label": "Pre-processing",
+      "row": 1,
+      "col": 1,
+      "subtitle": "clean and chunk"
+    },
+    {
+      "id": "embedding",
+      "label": "Embedding model",
+      "row": 1,
+      "col": 2
+    },
+    {
+      "id": "vector-db",
+      "label": "Vector database",
+      "row": 1,
+      "col": 3,
+      "subtitle": "knowledge index",
+      "icon": "database"
+    },
+    {
+      "id": "user-query",
+      "label": "User query",
+      "row": 0,
+      "col": 4,
+      "subtitle": "scenario and end goal",
+      "icon": "person"
+    },
+    {
+      "id": "processor",
+      "label": "Processor",
+      "row": 1,
+      "col": 4,
+      "subtitle": "orchestrator"
+    },
+    {
+      "id": "output-gen",
+      "label": "Output generation",
+      "row": 1,
+      "col": 5
+    },
+    {
+      "id": "judge",
+      "label": "LLM judge",
+      "row": 1,
+      "col": 6,
+      "kind": "decision"
+    },
+    {
+      "id": "error-loop",
+      "label": "Error feedback loop",
+      "row": 2,
+      "col": 6
+    },
+    {
+      "id": "done",
+      "label": "Final done state",
+      "row": 1,
+      "col": 7
+    },
+    {
+      "id": "human-review",
+      "label": "Human expert review",
+      "row": 1,
+      "col": 8,
+      "icon": "person"
+    },
+    {
+      "id": "verified-output",
+      "label": "Verified output",
+      "row": 2,
+      "col": 8,
+      "subtitle": "production ready"
+    }
+  ],
+  "edges": [
+    {
+      "from": "dsl",
+      "to": "preprocessing"
+    },
+    {
+      "from": "specs",
+      "to": "preprocessing"
+    },
+    {
+      "from": "preprocessing",
+      "to": "embedding",
+      "main": true
+    },
+    {
+      "from": "embedding",
+      "to": "vector-db",
+      "main": true
+    },
+    {
+      "from": "vector-db",
+      "to": "processor",
+      "label": "RAG context retrieval",
+      "style": "dashed",
+      "main": true
+    },
+    {
+      "from": "user-query",
+      "to": "processor"
+    },
+    {
+      "from": "processor",
+      "to": "output-gen",
+      "main": true
+    },
+    {
+      "from": "output-gen",
+      "to": "judge",
+      "main": true
+    },
+    {
+      "from": "judge",
+      "to": "error-loop",
+      "label": "validation failed"
+    },
+    {
+      "from": "error-loop",
+      "to": "processor",
+      "label": "refinement needed"
+    },
+    {
+      "from": "judge",
+      "to": "done",
+      "label": "validation passed",
+      "main": true
+    },
+    {
+      "from": "done",
+      "to": "human-review",
+      "main": true
+    },
+    {
+      "from": "human-review",
+      "to": "verified-output",
+      "main": true
+    }
+  ],
+  "groups": [
+    {
+      "id": "ingestion-phase",
+      "label": "Knowledge ingestion phase",
+      "contains": [
+        "dsl",
+        "specs",
+        "preprocessing",
+        "embedding",
+        "vector-db"
+      ],
+      "tone": "blue"
+    },
+    {
+      "id": "inference-phase",
+      "label": "Inference and orchestration",
+      "contains": [
+        "user-query",
+        "processor",
+        "output-gen"
+      ],
+      "tone": "purple"
+    },
+    {
+      "id": "qc-phase",
+      "label": "Quality control phase",
+      "contains": [
+        "judge",
+        "error-loop",
+        "done"
+      ],
+      "tone": "orange"
+    },
+    {
+      "id": "human-loop",
+      "label": "Human in the loop",
+      "contains": [
+        "human-review",
+        "verified-output"
+      ],
+      "tone": "green"
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+{
+  "template": "flow",
+  "style": "quiet",
+  "title": "MCP cluster",
+  "nodes": [
+    {
+      "id": "mcp-client",
+      "label": "MCP client",
+      "row": 1,
+      "col": 0,
+      "icon": "monitor"
+    },
+    {
+      "id": "keycloak",
+      "label": "Keycloak",
+      "row": 0,
+      "col": 1,
+      "subtitle": "authenticates requests"
+    },
+    {
+      "id": "mcp-proxy",
+      "label": "MCP proxy service",
+      "row": 1,
+      "col": 1
+    },
+    {
+      "id": "auth-store",
+      "label": "Auth state store",
+      "row": 1,
+      "col": 2,
+      "subtitle": "Redis, short-lived tokens",
+      "icon": "database"
+    },
+    {
+      "id": "proxy-config",
+      "label": "Proxy config",
+      "row": 2,
+      "col": 2,
+      "subtitle": "routing rules, tenants",
+      "icon": "database"
+    },
+    {
+      "id": "mcp-wrapper",
+      "label": "MCP wrapper service",
+      "row": 3,
+      "col": 1
+    },
+    {
+      "id": "telemetry",
+      "label": "Telemetry collector",
+      "row": 3,
+      "col": 2
+    },
+    {
+      "id": "entra",
+      "label": "Entra",
+      "row": 0,
+      "col": 4,
+      "subtitle": "external identity provider",
+      "icon": "cloud"
+    },
+    {
+      "id": "datadog",
+      "label": "Datadog",
+      "row": 3,
+      "col": 4,
+      "icon": "database"
+    }
+  ],
+  "edges": [
+    {
+      "from": "mcp-client",
+      "to": "mcp-proxy",
+      "main": true
+    },
+    {
+      "from": "mcp-proxy",
+      "to": "keycloak"
+    },
+    {
+      "from": "keycloak",
+      "to": "entra",
+      "label": "federates identity"
+    },
+    {
+      "from": "mcp-proxy",
+      "to": "auth-store",
+      "style": "dashed"
+    },
+    {
+      "from": "mcp-proxy",
+      "to": "proxy-config",
+      "style": "dashed"
+    },
+    {
+      "from": "mcp-proxy",
+      "to": "mcp-wrapper",
+      "main": true
+    },
+    {
+      "from": "mcp-wrapper",
+      "to": "telemetry",
+      "label": "logs and traces",
+      "main": true
+    },
+    {
+      "from": "telemetry",
+      "to": "datadog",
+      "main": true
+    }
+  ],
+  "groups": [
+    {
+      "id": "cluster",
+      "label": "Cluster",
+      "contains": [
+        "keycloak",
+        "mcp-proxy",
+        "auth-store",
+        "proxy-config",
+        "mcp-wrapper",
+        "telemetry"
+      ],
+      "tone": "blue"
+    }
+  ]
+}

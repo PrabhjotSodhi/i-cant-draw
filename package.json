@@ -5,7 +5,9 @@
   "description": "Hand-drawn architecture diagrams for people who cannot draw. A Claude Code plugin.",
   "scripts": {
     "test": "vitest run",
-    "render": "node scripts/render.mjs"
+    "eval": "node scripts/run-evals.mjs",
+    "render": "node scripts/render.mjs",
+    "eval:planner": "node scripts/run-planner-evals.mjs"
   },
   "devDependencies": {
     "vitest": "^3.1.1"

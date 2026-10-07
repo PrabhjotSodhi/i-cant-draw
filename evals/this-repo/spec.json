@@ -1,0 +1,115 @@
+{
+  "template": "flow",
+  "title": "How I Can't Draw works",
+  "nodes": [
+    {
+      "id": "request",
+      "label": "Your request",
+      "subtitle": "one sentence, or your code",
+      "icon": "person",
+      "row": 0,
+      "col": 0
+    },
+    {
+      "id": "plan",
+      "label": "Claude plans it",
+      "subtitle": "writes a small JSON spec",
+      "row": 0,
+      "col": 1
+    },
+    {
+      "id": "check",
+      "label": "Check the spec",
+      "subtitle": "names any bad field",
+      "row": 0,
+      "col": 2
+    },
+    {
+      "id": "layout",
+      "label": "Lay it out and draw it",
+      "subtitle": "one of 4 layouts, 6 styles",
+      "row": 0,
+      "col": 3
+    },
+    {
+      "id": "gate",
+      "label": "Overlap check",
+      "subtitle": "any overlap fails the render",
+      "row": 0,
+      "col": 4
+    },
+    {
+      "id": "review",
+      "label": "Claude looks at it",
+      "subtitle": "reads the PNG like a reviewer",
+      "row": 1,
+      "col": 4
+    },
+    {
+      "id": "done",
+      "label": "PNG, SVG and spec",
+      "subtitle": "saved next to your code",
+      "icon": "file",
+      "row": 1,
+      "col": 3
+    }
+  ],
+  "edges": [
+    {
+      "from": "request",
+      "to": "plan",
+      "main": true
+    },
+    {
+      "from": "plan",
+      "to": "check",
+      "main": true
+    },
+    {
+      "from": "check",
+      "to": "layout",
+      "main": true
+    },
+    {
+      "from": "gate",
+      "to": "review",
+      "main": true
+    },
+    {
+      "from": "review",
+      "to": "done",
+      "label": "looks right",
+      "main": true
+    },
+    {
+      "from": "review",
+      "to": "plan",
+      "label": "fix the spec, once"
+    },
+    {
+      "from": "layout",
+      "to": "gate",
+      "main": true
+    }
+  ],
+  "groups": [
+    {
+      "id": "claude",
+      "label": "Claude",
+      "contains": [
+        "plan"
+      ],
+      "tone": "purple"
+    },
+    {
+      "id": "engine",
+      "label": "The drawing engine",
+      "contains": [
+        "check",
+        "layout",
+        "gate"
+      ],
+      "tone": "blue"
+    }
+  ]
+}

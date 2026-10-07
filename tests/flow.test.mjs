@@ -307,6 +307,7 @@ describe('flowLayout: loop-back lines under a zone', () => {
   }
 });
 
+
 describe('flowLayout: straight lines between top-aligned cards', () => {
   const table = (id, n, c) => ({ id, kind: 'table', label: id, row: 0, col: c, columns: Array.from({ length: n }, (_, i) => ({ name: `c${i}`, type: 'text' })) });
   const spec = { template: 'flow', nodes: [table('a', 2, 0), table('b', 6, 1), table('c', 4, 2)], edges: [{ from: 'a', to: 'b' }, { from: 'c', to: 'b' }] };
@@ -316,4 +317,29 @@ describe('flowLayout: straight lines between top-aligned cards', () => {
     expect(new Set(ys).size).toBe(1);
     expect(ys[0]).toBe(a.y + a.height / 2);
   });
+});
+
+describe('flowLayout decisions', () => {
+  const evalSpec = name => JSON.parse(readFileSync(new URL(`../evals/${name}/spec.json`, import.meta.url)));
+  for (const name of ['ci-pipeline', 'research-agents']) {
+    for (const styleName of ['quiet', 'crayon']) {
+      it(`centres each diamond in its cell and meets its points in ${name} (${styleName})`, () => {
+        const decisionSpec = evalSpec(name);
+        const decisionLayout = flowLayout(decisionSpec, loadStyle(styleName));
+        const box = id => decisionLayout.nodes.find(n => n.id === id);
+        for (const d of decisionSpec.nodes.filter(n => n.kind === 'decision')) {
+          const diamond = box(d.id);
+          const neighbours = decisionSpec.nodes.filter(n => n.col === d.col && n.id !== d.id).map(n => box(n.id));
+          for (const n of neighbours) expect(diamond.x + diamond.width / 2).toBeCloseTo(n.x + n.width / 2, 5);
+          const cx = diamond.x + diamond.width / 2, cy = diamond.y + diamond.height / 2;
+          const points = [{ x: cx, y: diamond.y }, { x: diamond.x + diamond.width, y: cy }, { x: cx, y: diamond.y + diamond.height }, { x: diamond.x, y: cy }];
+          decisionSpec.edges.forEach((e, index) => {
+            const section = decisionLayout.edges.find(x => x.index === index).sections[0];
+            const ends = [...(e.from === d.id ? [section.startPoint] : []), ...(e.to === d.id ? [section.endPoint] : [])];
+            for (const end of ends) expect(points, `${e.from}→${e.to}`).toContainEqual(end);
+          });
+        }
+      });
+    }
+  }
 });

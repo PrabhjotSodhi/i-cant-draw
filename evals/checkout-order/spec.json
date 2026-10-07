@@ -1,0 +1,117 @@
+{
+  "template": "sequence",
+  "title": "Checkout, placing an order",
+  "actors": [
+    {
+      "id": "web",
+      "label": "Web shop",
+      "icon": "monitor"
+    },
+    {
+      "id": "checkout",
+      "label": "Checkout"
+    },
+    {
+      "id": "inventory",
+      "label": "Inventory"
+    },
+    {
+      "id": "payments",
+      "label": "Payments"
+    },
+    {
+      "id": "orders",
+      "label": "Orders DB",
+      "icon": "database"
+    }
+  ],
+  "messages": [
+    {
+      "from": "web",
+      "to": "checkout",
+      "label": "POST /orders"
+    },
+    {
+      "from": "checkout",
+      "to": "inventory",
+      "label": "reserve 2 items"
+    },
+    {
+      "from": "inventory",
+      "to": "checkout",
+      "label": "held for 10 min",
+      "kind": "return"
+    },
+    {
+      "from": "checkout",
+      "to": "payments",
+      "label": "charge 48.00"
+    },
+    {
+      "from": "payments",
+      "to": "checkout",
+      "label": "approved",
+      "kind": "return"
+    },
+    {
+      "from": "checkout",
+      "to": "orders",
+      "label": "insert order"
+    },
+    {
+      "from": "orders",
+      "to": "checkout",
+      "label": "order 1042",
+      "kind": "return"
+    },
+    {
+      "from": "checkout",
+      "to": "web",
+      "label": "201 Created",
+      "kind": "return"
+    },
+    {
+      "from": "payments",
+      "to": "checkout",
+      "label": "card declined",
+      "kind": "return"
+    },
+    {
+      "from": "checkout",
+      "to": "inventory",
+      "label": "release the hold",
+      "kind": "async"
+    },
+    {
+      "from": "checkout",
+      "to": "web",
+      "label": "402 payment failed",
+      "kind": "return"
+    }
+  ],
+  "fragments": [
+    {
+      "kind": "alt",
+      "tone": "blue",
+      "regions": [
+        {
+          "guard": "card approved",
+          "messages": [
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        {
+          "guard": "card declined",
+          "messages": [
+            8,
+            9,
+            10
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "template": "flow",
+  "style": "quiet",
+  "title": "CI/CD pipeline",
+  "nodes": [
+    {
+      "id": "push",
+      "label": "Developer pushes",
+      "row": 1,
+      "col": 0,
+      "subtitle": "commit and branch name",
+      "icon": "person"
+    },
+    {
+      "id": "git-host",
+      "label": "Git host",
+      "row": 1,
+      "col": 1,
+      "subtitle": "sends a webhook"
+    },
+    {
+      "id": "package-cache",
+      "label": "Package cache",
+      "row": 0,
+      "col": 2,
+      "icon": "database"
+    },
+    {
+      "id": "build",
+      "label": "Build agent",
+      "row": 1,
+      "col": 2,
+      "subtitle": "compiles the code"
+    },
+    {
+      "id": "secrets",
+      "label": "Secrets vault",
+      "row": 2,
+      "col": 2,
+      "subtitle": "optional",
+      "icon": "database"
+    },
+    {
+      "id": "tests",
+      "label": "Test suite",
+      "row": 1,
+      "col": 3
+    },
+    {
+      "id": "gate",
+      "label": "Quality gate",
+      "row": 1,
+      "col": 4,
+      "kind": "decision"
+    },
+    {
+      "id": "retry",
+      "label": "Retry flaky tests",
+      "row": 2,
+      "col": 4
+    },
+    {
+      "id": "passed",
+      "label": "Build passed",
+      "row": 1,
+      "col": 5
+    },
+    {
+      "id": "approval",
+      "label": "Release approval",
+      "row": 1,
+      "col": 6,
+      "icon": "person"
+    },
+    {
+      "id": "deploy",
+      "label": "Production deploy",
+      "row": 2,
+      "col": 6,
+      "subtitle": "live for users"
+    }
+  ],
+  "edges": [
+    {
+      "from": "push",
+      "to": "git-host",
+      "main": true
+    },
+    {
+      "from": "git-host",
+      "to": "build",
+      "style": "dashed",
+      "main": true
+    },
+    {
+      "from": "package-cache",
+      "to": "build",
+      "label": "fetch dependencies",
+      "style": "dashed"
+    },
+    {
+      "from": "secrets",
+      "to": "build",
+      "label": "read deploy keys",
+      "style": "dashed"
+    },
+    {
+      "from": "build",
+      "to": "tests",
+      "main": true
+    },
+    {
+      "from": "tests",
+      "to": "gate",
+      "main": true
+    },
+    {
+      "from": "gate",
+      "to": "retry",
+      "label": "tests failed"
+    },
+    {
+      "from": "retry",
+      "to": "tests",
+      "label": "run them again"
+    },
+    {
+      "from": "gate",
+      "to": "passed",
+      "label": "all tests pass",
+      "main": true
+    },
+    {
+      "from": "passed",
+      "to": "approval",
+      "main": true
+    },
+    {
+      "from": "approval",
+      "to": "deploy",
+      "main": true
+    }
+  ],
+  "groups": [
+    {
+      "id": "checks",
+      "label": "Quality checks",
+      "contains": [
+        "gate",
+        "retry",
+        "passed"
+      ],
+      "tone": "orange"
+    },
+    {
+      "id": "release",
+      "label": "Human approval",
+      "contains": [
+        "approval",
+        "deploy"
+      ],
+      "tone": "green"
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "template": "flow",
+  "style": "quiet",
+  "title": "Expense check flow",
+  "nodes": [
+    {
+      "id": "statements",
+      "label": "Card statements",
+      "row": 0,
+      "col": 0,
+      "subtitle": "paid transactions",
+      "icon": "documents"
+    },
+    {
+      "id": "uploads",
+      "label": "Receipt uploads",
+      "row": 1,
+      "col": 0,
+      "subtitle": "photos and PDF receipts",
+      "icon": "documents"
+    },
+    {
+      "id": "import",
+      "label": "Import jobs",
+      "row": 0,
+      "col": 1
+    },
+    {
+      "id": "transactions",
+      "label": "Transactions",
+      "row": 0,
+      "col": 2,
+      "subtitle": "card holder record",
+      "icon": "database"
+    },
+    {
+      "id": "receipts",
+      "label": "Receipts",
+      "row": 1,
+      "col": 2,
+      "subtitle": "scanned receipts, uploader record",
+      "icon": "database"
+    },
+    {
+      "id": "matcher",
+      "label": "Matcher (we build)",
+      "row": 0,
+      "col": 3,
+      "subtitle": "amount, date and merchant"
+    },
+    {
+      "id": "check-agent",
+      "label": "Expense check agent",
+      "row": 0,
+      "col": 4
+    },
+    {
+      "id": "verdict",
+      "label": "Verdict per expense",
+      "row": 0,
+      "col": 5,
+      "subtitle": "flagged expenses go to finance"
+    }
+  ],
+  "edges": [
+    {
+      "from": "statements",
+      "to": "import",
+      "main": true
+    },
+    {
+      "from": "uploads",
+      "to": "import"
+    },
+    {
+      "from": "import",
+      "to": "transactions",
+      "main": true
+    },
+    {
+      "from": "import",
+      "to": "receipts"
+    },
+    {
+      "from": "transactions",
+      "to": "receipts",
+      "label": "not linked",
+      "style": "dashed",
+      "annotation": true
+    },
+    {
+      "from": "transactions",
+      "to": "matcher",
+      "main": true
+    },
+    {
+      "from": "receipts",
+      "to": "matcher"
+    },
+    {
+      "from": "matcher",
+      "to": "check-agent",
+      "main": true
+    },
+    {
+      "from": "check-agent",
+      "to": "verdict",
+      "main": true
+    }
+  ],
+  "groups": [
+    {
+      "id": "expense-store",
+      "label": "Expense data store",
+      "contains": [
+        "transactions",
+        "receipts"
+      ],
+      "tone": "purple"
+    }
+  ]
+}

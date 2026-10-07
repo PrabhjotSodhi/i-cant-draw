@@ -1,0 +1,113 @@
+{
+  "template": "sequence",
+  "title": "How a coding agent fixes a failing test",
+  "actors": [
+    {
+      "id": "you",
+      "label": "You",
+      "kind": "actor"
+    },
+    {
+      "id": "agent",
+      "label": "Coding agent"
+    },
+    {
+      "id": "model",
+      "label": "Language model"
+    },
+    {
+      "id": "tools",
+      "label": "Tools",
+      "subtitle": "read, edit, run"
+    }
+  ],
+  "messages": [
+    {
+      "from": "you",
+      "to": "agent",
+      "label": "fix the failing test"
+    },
+    {
+      "from": "agent",
+      "to": "model",
+      "label": "the task, and the tools it may use"
+    },
+    {
+      "from": "model",
+      "to": "agent",
+      "label": "call: read the test file",
+      "kind": "return"
+    },
+    {
+      "from": "agent",
+      "to": "tools",
+      "label": "read login.test.js"
+    },
+    {
+      "from": "tools",
+      "to": "agent",
+      "label": "file contents",
+      "kind": "return"
+    },
+    {
+      "from": "agent",
+      "to": "model",
+      "label": "here is the file"
+    },
+    {
+      "from": "model",
+      "to": "agent",
+      "label": "call: edit login.js",
+      "kind": "return"
+    },
+    {
+      "from": "agent",
+      "to": "tools",
+      "label": "apply the edit, run the tests"
+    },
+    {
+      "from": "tools",
+      "to": "agent",
+      "label": "all tests pass",
+      "kind": "return"
+    },
+    {
+      "from": "agent",
+      "to": "model",
+      "label": "tests pass"
+    },
+    {
+      "from": "model",
+      "to": "agent",
+      "label": "done, with a summary",
+      "kind": "return"
+    },
+    {
+      "from": "agent",
+      "to": "you",
+      "label": "fixed: a missing await",
+      "kind": "return"
+    }
+  ],
+  "fragments": [
+    {
+      "kind": "loop",
+      "tone": "orange",
+      "regions": [
+        {
+          "guard": "until the model stops asking for tools",
+          "messages": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ]
+        }
+      ]
+    }
+  ]
+}

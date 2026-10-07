@@ -1,0 +1,128 @@
+{
+  "template": "flow",
+  "style": "quiet",
+  "title": "Actors and use cases",
+  "nodes": [
+    {
+      "id": "admin",
+      "label": "Workspace admin",
+      "row": 0,
+      "col": 0,
+      "kind": "actor"
+    },
+    {
+      "id": "billing",
+      "label": "Billing manager",
+      "row": 1,
+      "col": 0,
+      "kind": "actor"
+    },
+    {
+      "id": "member",
+      "label": "Member",
+      "row": 4,
+      "col": 0,
+      "kind": "actor"
+    },
+    {
+      "id": "moderator",
+      "label": "Moderator",
+      "row": 6,
+      "col": 2,
+      "kind": "actor"
+    },
+    {
+      "id": "uc-setup",
+      "label": "Set up the workspace",
+      "row": 0,
+      "col": 1
+    },
+    {
+      "id": "uc-plan",
+      "label": "Change the paid plan",
+      "row": 1,
+      "col": 1
+    },
+    {
+      "id": "uc-signin",
+      "label": "Sign in",
+      "row": 2,
+      "col": 1
+    },
+    {
+      "id": "uc-send",
+      "label": "Send a message",
+      "row": 3,
+      "col": 1
+    },
+    {
+      "id": "uc-call",
+      "label": "Start a video call",
+      "row": 4,
+      "col": 1
+    },
+    {
+      "id": "uc-share",
+      "label": "Share a file",
+      "row": 5,
+      "col": 1
+    },
+    {
+      "id": "uc-announce",
+      "label": "Post an announcement",
+      "row": 6,
+      "col": 1
+    }
+  ],
+  "edges": [
+    {
+      "from": "admin",
+      "to": "uc-setup"
+    },
+    {
+      "from": "billing",
+      "to": "uc-plan"
+    },
+    {
+      "from": "member",
+      "to": "uc-signin"
+    },
+    {
+      "from": "member",
+      "to": "uc-send"
+    },
+    {
+      "from": "member",
+      "to": "uc-call"
+    },
+    {
+      "from": "member",
+      "to": "uc-share"
+    },
+    {
+      "from": "member",
+      "to": "uc-announce"
+    },
+    {
+      "from": "moderator",
+      "to": "uc-announce",
+      "label": "approves"
+    }
+  ],
+  "groups": [
+    {
+      "id": "system",
+      "label": "Team chat app",
+      "contains": [
+        "uc-setup",
+        "uc-plan",
+        "uc-signin",
+        "uc-send",
+        "uc-call",
+        "uc-share",
+        "uc-announce"
+      ],
+      "tone": "blue"
+    }
+  ]
+}

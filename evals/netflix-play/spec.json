@@ -1,0 +1,104 @@
+{
+  "template": "sequence",
+  "title": "Netflix: pressing play",
+  "actors": [
+    {
+      "id": "client",
+      "label": "Netflix app",
+      "icon": "monitor"
+    },
+    {
+      "id": "playback",
+      "label": "Playback services"
+    },
+    {
+      "id": "steering",
+      "label": "Steering service"
+    },
+    {
+      "id": "cache",
+      "label": "Cache control"
+    },
+    {
+      "id": "oca",
+      "label": "Open Connect appliance",
+      "icon": "database"
+    }
+  ],
+  "messages": [
+    {
+      "from": "oca",
+      "to": "cache",
+      "label": "health, routes, files",
+      "kind": "async"
+    },
+    {
+      "from": "client",
+      "to": "playback",
+      "label": "play this title"
+    },
+    {
+      "from": "playback",
+      "to": "playback",
+      "label": "check rights and licensing"
+    },
+    {
+      "from": "playback",
+      "to": "playback",
+      "label": "pick streams for this device"
+    },
+    {
+      "from": "playback",
+      "to": "steering",
+      "label": "which appliances have these?"
+    },
+    {
+      "from": "steering",
+      "to": "cache",
+      "label": "look up each appliance"
+    },
+    {
+      "from": "cache",
+      "to": "steering",
+      "label": "health and files",
+      "kind": "return"
+    },
+    {
+      "from": "steering",
+      "to": "playback",
+      "label": "best appliance URLs",
+      "kind": "return"
+    },
+    {
+      "from": "playback",
+      "to": "client",
+      "label": "appliance URLs",
+      "kind": "return"
+    },
+    {
+      "from": "client",
+      "to": "oca",
+      "label": "request video"
+    },
+    {
+      "from": "oca",
+      "to": "client",
+      "label": "video",
+      "kind": "return"
+    }
+  ],
+  "fragments": [
+    {
+      "kind": "loop",
+      "tone": "orange",
+      "regions": [
+        {
+          "guard": "periodically",
+          "messages": [
+            0
+          ]
+        }
+      ]
+    }
+  ]
+}
