@@ -1,0 +1,1 @@
+Draw the database for a small online shop. Users place orders. Each order holds order items, and each item points at one product. An order can be paid in more than one payment. Products sit in categories, and a category can sit inside a parent category.

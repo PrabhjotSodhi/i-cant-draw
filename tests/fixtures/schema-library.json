@@ -1,0 +1,308 @@
+{
+  "template": "schema",
+  "title": "Public library, database",
+  "nodes": [
+    {
+      "id": "authors",
+      "kind": "table",
+      "label": "authors",
+      "row": 0,
+      "col": 0,
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "key": "PK"
+        },
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "birth_year",
+          "type": "int"
+        }
+      ]
+    },
+    {
+      "id": "book-authors",
+      "kind": "table",
+      "label": "book_authors",
+      "row": 0,
+      "col": 1,
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "key": "PK"
+        },
+        {
+          "name": "book_id",
+          "type": "bigint",
+          "key": "FK"
+        },
+        {
+          "name": "author_id",
+          "type": "bigint",
+          "key": "FK"
+        }
+      ]
+    },
+    {
+      "id": "books",
+      "kind": "table",
+      "label": "books",
+      "row": 1,
+      "col": 0,
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "key": "PK"
+        },
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "isbn",
+          "type": "text, unique"
+        },
+        {
+          "name": "published_year",
+          "type": "int"
+        }
+      ]
+    },
+    {
+      "id": "copies",
+      "kind": "table",
+      "label": "copies",
+      "row": 1,
+      "col": 1,
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "key": "PK"
+        },
+        {
+          "name": "book_id",
+          "type": "bigint",
+          "key": "FK"
+        },
+        {
+          "name": "barcode",
+          "type": "text, unique"
+        },
+        {
+          "name": "status",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "id": "members",
+      "kind": "table",
+      "label": "members",
+      "row": 2,
+      "col": 0,
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "key": "PK"
+        },
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "email",
+          "type": "text, unique"
+        },
+        {
+          "name": "card_number",
+          "type": "text, unique"
+        }
+      ]
+    },
+    {
+      "id": "loans",
+      "kind": "table",
+      "label": "loans",
+      "row": 2,
+      "col": 1,
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "key": "PK"
+        },
+        {
+          "name": "member_id",
+          "type": "bigint",
+          "key": "FK"
+        },
+        {
+          "name": "copy_id",
+          "type": "bigint",
+          "key": "FK"
+        },
+        {
+          "name": "taken_out_at",
+          "type": "timestamptz"
+        },
+        {
+          "name": "due_at",
+          "type": "date"
+        },
+        {
+          "name": "returned_at",
+          "type": "timestamptz"
+        }
+      ]
+    },
+    {
+      "id": "holds",
+      "kind": "table",
+      "label": "holds",
+      "row": 3,
+      "col": 1,
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "key": "PK"
+        },
+        {
+          "name": "member_id",
+          "type": "bigint",
+          "key": "FK"
+        },
+        {
+          "name": "book_id",
+          "type": "bigint",
+          "key": "FK"
+        },
+        {
+          "name": "placed_at",
+          "type": "timestamptz"
+        },
+        {
+          "name": "status",
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "book-authors",
+      "fromColumn": "author_id",
+      "to": "authors",
+      "toColumn": "id",
+      "ends": [
+        "many",
+        "one"
+      ],
+      "label": "writes"
+    },
+    {
+      "from": "book-authors",
+      "fromColumn": "book_id",
+      "to": "books",
+      "toColumn": "id",
+      "ends": [
+        "many",
+        "one"
+      ],
+      "label": "credits"
+    },
+    {
+      "from": "copies",
+      "fromColumn": "book_id",
+      "to": "books",
+      "toColumn": "id",
+      "ends": [
+        "many",
+        "one"
+      ],
+      "label": "has"
+    },
+    {
+      "from": "loans",
+      "fromColumn": "member_id",
+      "to": "members",
+      "toColumn": "id",
+      "ends": [
+        "many",
+        "one"
+      ],
+      "label": "borrows"
+    },
+    {
+      "from": "loans",
+      "fromColumn": "copy_id",
+      "to": "copies",
+      "toColumn": "id",
+      "ends": [
+        "many",
+        "one"
+      ],
+      "label": "goes out in"
+    },
+    {
+      "from": "holds",
+      "fromColumn": "member_id",
+      "to": "members",
+      "toColumn": "id",
+      "ends": [
+        "many",
+        "one"
+      ],
+      "label": "places"
+    },
+    {
+      "from": "holds",
+      "fromColumn": "book_id",
+      "to": "books",
+      "toColumn": "id",
+      "ends": [
+        "many",
+        "one"
+      ],
+      "label": "receives"
+    }
+  ],
+  "groups": [
+    {
+      "id": "catalogue",
+      "label": "Catalogue",
+      "contains": [
+        "authors",
+        "book-authors",
+        "books",
+        "copies"
+      ],
+      "tone": "green"
+    },
+    {
+      "id": "people",
+      "label": "Members",
+      "contains": [
+        "members"
+      ],
+      "tone": "purple"
+    },
+    {
+      "id": "lending",
+      "label": "Loans and holds",
+      "contains": [
+        "loans",
+        "holds"
+      ],
+      "tone": "blue"
+    }
+  ]
+}

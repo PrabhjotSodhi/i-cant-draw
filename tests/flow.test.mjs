@@ -251,6 +251,20 @@ describe('flowLayout: leftward labels', () => {
   });
 });
 
+describe('flowLayout: row alignment', () => {
+  const table = (id, n, c) => ({ id, kind: 'table', label: id, row: 0, col: c, columns: Array.from({ length: n }, (_, i) => ({ name: `c${i}`, type: 'text' })) });
+  const twoTables = { template: 'flow', nodes: [table('a', 2, 0), table('b', 6, 1)], edges: [] };
+  it('centres cards of different heights in a row by default', () => {
+    const l = flowLayout(twoTables, quiet), a = l.nodes[0], b = l.nodes[1];
+    expect(a.y + a.height / 2).toBe(b.y + b.height / 2);
+  });
+  it('aligns their tops with rowAlign top, and carries each card\'s rows', () => {
+    const l = flowLayout(twoTables, quiet, { rowAlign: 'top' }), a = l.nodes[0], b = l.nodes[1];
+    expect(a.y).toBe(b.y);
+    expect(b.rows).toHaveLength(6);
+  });
+});
+
 describe('flowLayout: state machines', () => {
   const spec = JSON.parse(readFileSync(new URL('../evals/state-build/spec.json', import.meta.url)));
   const l = flowLayout(spec, quiet);
@@ -291,4 +305,15 @@ describe('flowLayout: loop-back lines under a zone', () => {
       expect(z.y + z.height - (label.y + label.height)).toBeGreaterThanOrEqual(8);
     });
   }
+});
+
+describe('flowLayout: straight lines between top-aligned cards', () => {
+  const table = (id, n, c) => ({ id, kind: 'table', label: id, row: 0, col: c, columns: Array.from({ length: n }, (_, i) => ({ name: `c${i}`, type: 'text' })) });
+  const spec = { template: 'flow', nodes: [table('a', 2, 0), table('b', 6, 1), table('c', 4, 2)], edges: [{ from: 'a', to: 'b' }, { from: 'c', to: 'b' }] };
+  it('runs every same-row line at one height inside the shortest card', () => {
+    const l = flowLayout(spec, quiet, { rowAlign: 'top' }), a = l.nodes[0];
+    const ys = l.edges.flatMap(e => [e.sections[0].startPoint.y, e.sections[0].endPoint.y]);
+    expect(new Set(ys).size).toBe(1);
+    expect(ys[0]).toBe(a.y + a.height / 2);
+  });
 });
