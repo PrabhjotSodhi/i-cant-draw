@@ -1,0 +1,31 @@
+{
+  "template": "schema",
+  "title": "Online shop, database",
+  "nodes": [
+    {"id": "users", "kind": "table", "label": "users", "row": 0, "col": 0, "columns": [
+      {"name": "id", "type": "bigint", "key": "PK"}, {"name": "email", "type": "text, unique"}, {"name": "name", "type": "text"}, {"name": "created_at", "type": "timestamptz"}]},
+    {"id": "orders", "kind": "table", "label": "orders", "row": 0, "col": 1, "columns": [
+      {"name": "id", "type": "bigint", "key": "PK"}, {"name": "user_id", "type": "bigint", "key": "FK"}, {"name": "status", "type": "text"}, {"name": "placed_at", "type": "timestamptz"}, {"name": "total", "type": "numeric"}]},
+    {"id": "order-items", "kind": "table", "label": "order_items", "row": 0, "col": 2, "columns": [
+      {"name": "id", "type": "bigint", "key": "PK"}, {"name": "order_id", "type": "bigint", "key": "FK"}, {"name": "product_id", "type": "bigint", "key": "FK"}, {"name": "quantity", "type": "int"}, {"name": "unit_price", "type": "numeric"}]},
+    {"id": "products", "kind": "table", "label": "products", "row": 0, "col": 3, "columns": [
+      {"name": "id", "type": "bigint", "key": "PK"}, {"name": "category_id", "type": "bigint", "key": "FK"}, {"name": "name", "type": "text"}, {"name": "price", "type": "numeric"}, {"name": "stock", "type": "int"}]},
+    {"id": "payments", "kind": "table", "label": "payments", "row": 1, "col": 1, "columns": [
+      {"name": "id", "type": "bigint", "key": "PK"}, {"name": "order_id", "type": "bigint", "key": "FK"}, {"name": "amount", "type": "numeric"}, {"name": "provider", "type": "text"}, {"name": "paid_at", "type": "timestamptz"}]},
+    {"id": "categories", "kind": "table", "label": "categories", "row": 1, "col": 3, "columns": [
+      {"name": "id", "type": "bigint", "key": "PK"}, {"name": "parent_id", "type": "bigint", "key": "FK"}, {"name": "name", "type": "text"}]}
+  ],
+  "edges": [
+    {"from": "orders", "fromColumn": "user_id", "to": "users", "toColumn": "id", "ends": ["many", "one"], "label": "places"},
+    {"from": "order-items", "fromColumn": "order_id", "to": "orders", "toColumn": "id", "ends": ["many", "one"], "label": "holds"},
+    {"from": "order-items", "fromColumn": "product_id", "to": "products", "toColumn": "id", "ends": ["many", "one"], "label": "appears in"},
+    {"from": "payments", "fromColumn": "order_id", "to": "orders", "toColumn": "id", "ends": ["many", "one"], "label": "paid by"},
+    {"from": "products", "fromColumn": "category_id", "to": "categories", "toColumn": "id", "ends": ["many", "one"], "label": "groups"},
+    {"from": "categories", "fromColumn": "parent_id", "to": "categories", "toColumn": "id", "ends": ["many", "one"], "label": "contains"}
+  ],
+  "groups": [
+    {"id": "customers", "label": "Customers", "contains": ["users"], "tone": "purple"},
+    {"id": "sales", "label": "Orders and payments", "contains": ["orders", "order-items", "payments"], "tone": "blue"},
+    {"id": "catalogue", "label": "Catalogue", "contains": ["products", "categories"], "tone": "green"}
+  ]
+}

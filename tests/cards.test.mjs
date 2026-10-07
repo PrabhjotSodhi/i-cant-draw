@@ -128,6 +128,29 @@ describe('sizeCards edge cases', () => {
   });
 });
 
+describe('sizeCards: tables and classes', () => {
+  const col = (name, key) => ({ name, type: 'uuid', ...(key ? { key } : {}) });
+  const table = (id, n) => ({ id, kind: 'table', label: id, columns: Array.from({ length: n }, (_, i) => col(`column_${i}`, i ? undefined : 'PK')) });
+  it('gives a table the height its columns need', () => {
+    const sizes = sizeCards({ nodes: [table('small', 2), table('big', 6)] }, quiet, () => 'cards');
+    expect(sizes.get('big').height - sizes.get('small').height).toBe(4 * 28);
+    expect(sizes.get('small').height).toBe(42 + 2 * 28 + 10);
+    expect(sizes.get('small').width).toBe(sizes.get('big').width);
+  });
+  it('puts each table row centre 28 apart, below the header', () => {
+    const rows = sizeCards({ nodes: [table('t', 3)] }, quiet, () => 'cards').get('t').rows;
+    expect(rows.map(r => r.y)).toEqual([61, 89, 117]);
+  });
+  it('keeps ordinary cards at the shared height when tables are present', () => {
+    const sizes = sizeCards({ nodes: [table('t', 8), { id: 'c', label: 'Card' }] }, quiet, () => 'cards');
+    expect(sizes.get('c').height).toBeLessThan(sizes.get('t').height);
+  });
+  it('names the node and the row when a row cannot fit', () => {
+    const wide = { id: 'wide', kind: 'table', label: 'wide', columns: [{ name: 'a_column_name_that_goes_on_and_on_forever', type: 'character varying(255)' }] };
+    expect(() => sizeCards({ nodes: [wide] }, quiet, () => 'cards')).toThrow(/node "wide": row "a_column_name_that_goes_on_and_on_forever" is too long/);
+  });
+});
+
 describe('sizeCards: state kinds', () => {
   it('gives start and end fixed sizes, and states the shared card size', () => {
     const sizes = sizeCards({ nodes: [{ id: 's', kind: 'start' }, { id: 'e', kind: 'end' }, { id: 'r', kind: 'state', label: 'Running' }, { id: 'c', label: 'A longer card title' }] }, quiet, () => 'cards');

@@ -91,6 +91,21 @@ describe('endLabelFor', () => {
   });
 });
 
+describe('row ports', () => {
+  const card = { x: 100, y: 50, width: 200, height: 160 };
+  it('puts a left or right port at the row y it is given', () => {
+    expect(side(card, 'left', 97)).toEqual({ x: 100, y: 97 });
+    expect(side(card, 'right', 153)).toEqual({ x: 300, y: 153 });
+  });
+  it('keeps the middle of the side without a y', () => {
+    expect(side(card, 'right')).toEqual({ x: 300, y: 130 });
+  });
+  it('joins ports on rows at different heights with one Z through the gap middle', () => {
+    const z = zRoute(side(card, 'right', 97), { x: 420, y: 153 }, 360);
+    expect(z.bendPoints).toEqual([{ x: 360, y: 97 }, { x: 360, y: 153 }]);
+  });
+});
+
 describe('selfLoop', () => {
   it('loops on the top edge, out at 10 percent of the width and back in at 40 percent', () => {
     const s = selfLoop({ x: 100, y: 100, width: 200, height: 60 });
