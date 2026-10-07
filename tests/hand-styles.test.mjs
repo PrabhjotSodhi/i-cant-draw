@@ -48,3 +48,21 @@ describe('PNG size in every style', () => {
     }, 30000);
   }
 });
+
+describe('class cards in every style', () => {
+  const classBox = { x: 10, y: 10, width: 220, height: 160 };
+  const strokes = (svg) => (svg.match(/[ML]\s*-?\d/g) || []).length;
+  for (const name of ['quiet', 'crayon', 'riso', 'whiteboard', 'notebook', 'watercolour']) {
+    const style = loadStyle(name);
+    it(`${name}: tints the header 16 percent in the zone tone and rules both compartments`, () => {
+      const card = style.card({ box: classBox, kind: 'class', tone: 'blue', dividers: [44, 100] }, ctx());
+      expect(card).toMatch(/fill-opacity="0\.16"/);
+      expect(card).toMatch(new RegExp(`fill="(${Object.values(style.palette.tones.blue).join('|')})"[^>]*fill-opacity="0\\.16"`));
+      const bare = style.card({ box: classBox, kind: 'class', tone: 'blue', dividers: [] }, ctx());
+      expect(strokes(card)).toBeGreaterThan(strokes(bare));
+    });
+    it(`${name}: leaves the header untinted outside a zone`, () => {
+      expect(style.card({ box: classBox, kind: 'class', dividers: [44, 100] }, ctx())).not.toMatch(/fill-opacity="0\.16"/);
+    });
+  }
+});

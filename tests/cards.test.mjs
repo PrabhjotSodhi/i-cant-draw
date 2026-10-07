@@ -141,6 +141,14 @@ describe('sizeCards: tables and classes', () => {
     const rows = sizeCards({ nodes: [table('t', 3)] }, quiet, () => 'cards').get('t').rows;
     expect(rows.map(r => r.y)).toEqual([61, 89, 117]);
   });
+  it('sizes a class from its stereotype, attributes and methods', () => {
+    const plain = { id: 'a', kind: 'class', label: 'Runner', attributes: ['stages: Stage[]', 'budget: Budget'], methods: ['run()'] };
+    const abstract = { ...plain, id: 'b', stereotype: 'abstract' };
+    const sizes = sizeCards({ nodes: [plain, abstract] }, quiet, () => 'cards');
+    expect(sizes.get('a').height).toBe(44 + (2 * 26 + 12) + (1 * 26 + 12));
+    expect(sizes.get('b').height - sizes.get('a').height).toBe(16);
+    expect(sizes.get('a').dividers).toEqual([44, 44 + 2 * 26 + 12]);
+  });
   it('keeps ordinary cards at the shared height when tables are present', () => {
     const sizes = sizeCards({ nodes: [table('t', 8), { id: 'c', label: 'Card' }] }, quiet, () => 'cards');
     expect(sizes.get('c').height).toBeLessThan(sizes.get('t').height);
