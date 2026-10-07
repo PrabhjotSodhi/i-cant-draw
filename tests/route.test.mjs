@@ -64,3 +64,42 @@ describe('route helpers', () => {
     expect(l.x).toBe(62);
   });
 });
+
+describe('endLabelFor', () => {
+  const rightward = straight({ x: 0, y: 100 }, { x: 200, y: 100 });
+  const downward = straight({ x: 50, y: 0 }, { x: 50, y: 200 });
+  it('puts an end label below a horizontal line, 10 units back from the end', () => {
+    const l = endLabelFor(rightward, '1..*', 'end', quiet);
+    expect(l.x + l.width).toBe(190);
+    expect(l.y).toBe(112);
+    expect(l.end).toBe('end');
+  });
+  it('puts a start label below a horizontal line, 10 units in from the start', () => {
+    const l = endLabelFor(rightward, '1', 'start', quiet);
+    expect(l.x).toBe(10);
+    expect(l.y).toBe(112);
+  });
+  it('puts end labels right of a vertical line, 10 units back from either end', () => {
+    const end = endLabelFor(downward, '1', 'end', quiet), start = endLabelFor(downward, '1', 'start', quiet);
+    expect(end.x).toBe(62);
+    expect(end.y + end.height).toBe(190);
+    expect(start.y).toBe(10);
+  });
+  it('measures the text so the box fits it', () => {
+    const short = endLabelFor(rightward, '1', 'end', quiet), long = endLabelFor(rightward, '0..*', 'end', quiet);
+    expect(long.width).toBeGreaterThan(short.width);
+  });
+});
+
+describe('selfLoop', () => {
+  it('loops on the top edge, out at 10 percent of the width and back in at 40 percent', () => {
+    const s = selfLoop({ x: 100, y: 100, width: 200, height: 60 });
+    expect(s.startPoint).toEqual({ x: 120, y: 100 });
+    expect(s.bendPoints).toEqual([{ x: 120, y: 68 }, { x: 180, y: 68 }]);
+    expect(s.endPoint).toEqual({ x: 180, y: 100 });
+  });
+  it('puts a vertical label on the left when asked', () => {
+    const l = labelFor(straight({ x: 200, y: 0 }, { x: 200, y: 100 }), 'left side', quiet, [], { left: true });
+    expect(l.x + l.width).toBe(188);
+  });
+});

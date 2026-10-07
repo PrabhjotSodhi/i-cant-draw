@@ -63,3 +63,26 @@ describe('end markers', () => {
     });
   }
 });
+
+describe('state kinds in both styles', () => {
+  const box = { x: 10, y: 10, width: 180, height: 56 };
+  for (const name of ['quiet', 'crayon']) {
+    const style = loadStyle(name);
+    const ctx = { random: (() => { let i = 0; return () => ((i++ * 0.37) % 1); })() };
+    it(`${name}: a state is rounded and tinted with its zone's tone`, () => {
+      const svg = style.card({ box, kind: 'state', tone: 'green' }, ctx);
+      expect(svg).toContain('rx="18"');
+      if (name === 'crayon') expect(svg).toContain(`fill="${style.palette.tones.green.fill}" fill-opacity="0.16"`);
+      else expect(svg).toContain(`stroke="${style.palette.tones.green.text}"`);
+    });
+    it(`${name}: start is a filled dot and end is a ring around a dot`, () => {
+      const start = style.card({ box: { x: 0, y: 0, width: 20, height: 20 }, kind: 'start' }, ctx);
+      const end = style.card({ box: { x: 0, y: 0, width: 26, height: 26 }, kind: 'end' }, ctx);
+      expect((start.match(/<circle/g) || []).length).toBe(1);
+      expect(start).toContain('r="10"');
+      expect((end.match(/<circle/g) || []).length).toBe(2);
+      expect(end).toContain('r="13"');
+      expect(end).toContain('r="7"');
+    });
+  }
+});

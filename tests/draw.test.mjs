@@ -80,6 +80,23 @@ describe('draw: end labels', () => {
   });
 });
 
+describe('draw: state kinds', () => {
+  const stateSpec = { template: 'flow', nodes: [{ id: 'go', kind: 'start' }, { id: 'run', kind: 'state', label: 'Running' }],
+    edges: [], groups: [{ id: 'z', label: 'Working', contains: ['run'], tone: 'blue' }] };
+  const stateLayout = { width: 400, height: 140, edges: [],
+    nodes: [{ id: 'go', x: 10, y: 60, width: 20, height: 20, lines: [] }, { id: 'run', x: 120, y: 42, width: 200, height: 56, lines: [] }],
+    groups: [{ id: 'z', x: 96, y: 0, width: 248, height: 122, depth: 0, spec: stateSpec.groups[0] }] };
+  const crayon = loadStyle('crayon');
+  const { svg, geometry } = draw(stateLayout, stateSpec, crayon);
+  it('centres a state title and tints the state with its zone tone', () => {
+    expect(svg).toMatch(/text-anchor="middle"[^>]*>Running</);
+    expect(svg).toContain(`fill="${crayon.palette.tones.blue.fill}" fill-opacity="0.16"`);
+  });
+  it('draws no text for a start node, and still gives it geometry', () => {
+    expect(geometry.filter(g => g.owner === 'go').map(g => g.kind)).toEqual(['node']);
+  });
+});
+
 describe('draw: crayon label outline', () => {
   const crayon = loadStyle('crayon');
   it('outlines crayon labels in paper colour instead of boxing them', () => {

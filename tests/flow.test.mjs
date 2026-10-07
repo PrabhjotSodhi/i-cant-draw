@@ -187,34 +187,6 @@ describe('flowLayout: routes', () => {
   });
 });
 
-describe('flowLayout: leftward labels', () => {
-  it('sizes the gap for a labelled edge into the next column on the left', () => {
-    const s = { template: 'flow', nodes: [card('uc', 0, 0), card('actor', 0, 1, { kind: 'actor' })],
-      edges: [{ from: 'actor', to: 'uc', label: 'reads, then approves' }] };
-    const l = flowLayout(s, quiet);
-    const uc = l.nodes.find(n => n.id === 'uc'), actor = l.nodes.find(n => n.id === 'actor');
-    expect(actor.x - (uc.x + uc.width)).toBeGreaterThanOrEqual(quiet.measure('reads, then approves', 13) + 58);
-  });
-});
-
-describe('flowLayout: loop-back lines under a zone', () => {
-  const card = (id, row, col) => ({ id, label: id.toUpperCase(), row, col });
-  const inside = { template: 'flow', nodes: [card('a', 0, 0), card('b', 0, 1), card('c', 0, 2)],
-    edges: [{ from: 'a', to: 'b' }, { from: 'b', to: 'c' }, { from: 'c', to: 'a', label: 'one more round' }],
-    groups: [{ id: 'z', label: 'Zone', contains: ['a', 'b', 'c'], tone: 'blue' }] };
-  const across = { template: 'flow', nodes: [card('a', 0, 0), card('b', 0, 1), card('c', 0, 2), card('d', 0, 3)],
-    edges: [{ from: 'a', to: 'b' }, { from: 'b', to: 'c' }, { from: 'c', to: 'd' }, { from: 'd', to: 'a', label: 'fix it once' }],
-    groups: [{ id: 'z', label: 'Zone', contains: ['b', 'c'], tone: 'blue' }] };
-  for (const [name, spec] of [['inside the zone', inside], ['passing through the zone', across]]) {
-    it(`keeps the label clear of the zone border, ${name}`, () => {
-      const l = flowLayout(spec, quiet);
-      const z = l.groups.find(g => g.id === 'z');
-      const label = l.edges.find(e => spec.edges[e.index].label).labels[0];
-      expect(z.y + z.height - (label.y + label.height)).toBeGreaterThanOrEqual(8);
-    });
-  }
-});
-
 import { lintLayout } from '../scripts/layout-lint.mjs';
 const rules = findings => [...new Set(findings.map(f => f.rule))];
 
@@ -267,4 +239,56 @@ describe('flowLayout: review fixes', () => {
     const l = flowLayout(s, quiet);
     expect(checkCollisions(draw(l, s, quiet).geometry)).toEqual([]);
   });
+});
+
+describe('flowLayout: leftward labels', () => {
+  it('sizes the gap for a labelled edge into the next column on the left', () => {
+    const s = { template: 'flow', nodes: [card('uc', 0, 0), card('actor', 0, 1, { kind: 'actor' })],
+      edges: [{ from: 'actor', to: 'uc', label: 'reads, then approves' }] };
+    const l = flowLayout(s, quiet);
+    const uc = l.nodes.find(n => n.id === 'uc'), actor = l.nodes.find(n => n.id === 'actor');
+    expect(actor.x - (uc.x + uc.width)).toBeGreaterThanOrEqual(quiet.measure('reads, then approves', 13) + 58);
+  });
+});
+
+describe('flowLayout: state machines', () => {
+  const spec = JSON.parse(readFileSync(new URL('../evals/state-build/spec.json', import.meta.url)));
+  const l = flowLayout(spec, quiet);
+  const at = id => l.nodes.find(n => n.id === id);
+  const edgeOf = (from, to) => l.edges.find(e => spec.edges[e.index].from === from && spec.edges[e.index].to === to);
+  it('routes a self-loop on the top edge, with its label inside the zone', () => {
+    const run = at('running'), loop = edgeOf('running', 'running').sections[0];
+    expect(loop.startPoint).toEqual({ x: run.x + run.width * 0.1, y: run.y });
+    expect(loop.endPoint).toEqual({ x: run.x + run.width * 0.4, y: run.y });
+    const zone = l.groups.find(g => g.id === 'working');
+    expect(zone.y + 30).toBeLessThan(edgeOf('running', 'running').labels[0].y);
+  });
+  it('sets a transition each way 60 apart, with labels on their outer sides', () => {
+    const down = edgeOf('running', 'blocked'), up = edgeOf('blocked', 'running');
+    const dx = down.sections[0].startPoint.x, ux = up.sections[0].startPoint.x;
+    expect(ux - dx).toBe(60);
+    expect(down.labels[0].x + down.labels[0].width).toBeLessThan(dx);
+    expect(up.labels[0].x).toBeGreaterThan(ux);
+  });
+  it('passes the contract', () => {
+    expect(() => assertLayout(l)).not.toThrow();
+  });
+});
+
+describe('flowLayout: loop-back lines under a zone', () => {
+  const card = (id, row, col) => ({ id, label: id.toUpperCase(), row, col });
+  const inside = { template: 'flow', nodes: [card('a', 0, 0), card('b', 0, 1), card('c', 0, 2)],
+    edges: [{ from: 'a', to: 'b' }, { from: 'b', to: 'c' }, { from: 'c', to: 'a', label: 'one more round' }],
+    groups: [{ id: 'z', label: 'Zone', contains: ['a', 'b', 'c'], tone: 'blue' }] };
+  const across = { template: 'flow', nodes: [card('a', 0, 0), card('b', 0, 1), card('c', 0, 2), card('d', 0, 3)],
+    edges: [{ from: 'a', to: 'b' }, { from: 'b', to: 'c' }, { from: 'c', to: 'd' }, { from: 'd', to: 'a', label: 'fix it once' }],
+    groups: [{ id: 'z', label: 'Zone', contains: ['b', 'c'], tone: 'blue' }] };
+  for (const [name, spec] of [['inside the zone', inside], ['passing through the zone', across]]) {
+    it(`keeps the label clear of the zone border, ${name}`, () => {
+      const l = flowLayout(spec, quiet);
+      const z = l.groups.find(g => g.id === 'z');
+      const label = l.edges.find(e => spec.edges[e.index].label).labels[0];
+      expect(z.y + z.height - (label.y + label.height)).toBeGreaterThanOrEqual(8);
+    });
+  }
 });
