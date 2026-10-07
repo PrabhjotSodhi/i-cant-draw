@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
+import { STYLE_NAMES } from '../scripts/styles/index.mjs';
 
 const prompt = readFileSync(new URL('../references/judge-prompt.md', import.meta.url), 'utf-8');
 
@@ -22,5 +23,10 @@ describe('judge prompt', () => {
   it('falls back to the style\'s hub golden when no golden matches the layout', () => {
     expect(prompt).toContain('references/goldens/<style>-<layout>.png');
     expect(prompt).toMatch(/does not exist, compare with the style's hub golden `references\/goldens\/<style>-hub\.png`/);
+  });
+  it('has a hub golden for every style', () => {
+    for (const style of STYLE_NAMES) {
+      expect(existsSync(new URL(`../references/goldens/${style}-hub.png`, import.meta.url)), style).toBe(true);
+    }
   });
 });
