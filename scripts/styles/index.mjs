@@ -1,8 +1,12 @@
 import quiet from './quiet.mjs';
 import crayon from './crayon.mjs';
+import riso from './riso.mjs';
+import whiteboard from './whiteboard.mjs';
+import notebook from './notebook.mjs';
+import watercolour from './watercolour.mjs';
 import { systemFont } from './fonts.mjs';
 
-const STYLES = { quiet, crayon };
+const STYLES = { quiet, crayon, riso, whiteboard, notebook, watercolour };
 
 export const STYLE_NAMES = Object.keys(STYLES);
 

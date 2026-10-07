@@ -1,0 +1,175 @@
+{
+  "template": "flow",
+  "title": "Netflix video encoding on Cosmos",
+  "nodes": [
+    {
+      "id": "orchestrator",
+      "label": "Workflow orchestrator",
+      "subtitle": "asks for one encode",
+      "row": 1,
+      "col": 0
+    },
+    {
+      "id": "optimus",
+      "label": "Optimus API",
+      "subtitle": "validates the request",
+      "row": 1,
+      "col": 1
+    },
+    {
+      "id": "splitter",
+      "label": "Splitter",
+      "subtitle": "cuts the video into chunks",
+      "row": 1,
+      "col": 2
+    },
+    {
+      "id": "encode1",
+      "label": "Encoder",
+      "subtitle": "chunk 1, in parallel",
+      "row": 0,
+      "col": 3
+    },
+    {
+      "id": "encode2",
+      "label": "Encoder",
+      "subtitle": "chunk 2, in parallel",
+      "row": 1,
+      "col": 3
+    },
+    {
+      "id": "encode3",
+      "label": "Encoder",
+      "subtitle": "chunk 3, in parallel",
+      "row": 2,
+      "col": 3
+    },
+    {
+      "id": "assembler",
+      "label": "Assembler",
+      "subtitle": "stitches the chunks back",
+      "row": 1,
+      "col": 4
+    },
+    {
+      "id": "validator",
+      "label": "Validator",
+      "subtitle": "checks the encoded video",
+      "row": 1,
+      "col": 5
+    },
+    {
+      "id": "notifier",
+      "label": "Notifier",
+      "subtitle": "tells the API it is done",
+      "row": 1,
+      "col": 6
+    },
+    {
+      "id": "validation",
+      "label": "Video Validation Service",
+      "subtitle": "another Cosmos service",
+      "row": 3,
+      "col": 5
+    }
+  ],
+  "edges": [
+    {
+      "from": "orchestrator",
+      "to": "optimus",
+      "label": "encode request",
+      "main": true
+    },
+    {
+      "from": "optimus",
+      "to": "splitter",
+      "label": "source and recipe",
+      "main": true
+    },
+    {
+      "from": "splitter",
+      "to": "encode1"
+    },
+    {
+      "from": "splitter",
+      "to": "encode2",
+      "main": true
+    },
+    {
+      "from": "splitter",
+      "to": "encode3"
+    },
+    {
+      "from": "encode1",
+      "to": "assembler"
+    },
+    {
+      "from": "encode2",
+      "to": "assembler",
+      "main": true
+    },
+    {
+      "from": "encode3",
+      "to": "assembler"
+    },
+    {
+      "from": "assembler",
+      "to": "validator",
+      "label": "encoded video",
+      "main": true
+    },
+    {
+      "from": "validator",
+      "to": "validation",
+      "label": "validate"
+    },
+    {
+      "from": "validator",
+      "to": "notifier",
+      "label": "passed",
+      "main": true
+    }
+  ],
+  "groups": [
+    {
+      "id": "callers",
+      "label": "Caller",
+      "contains": [
+        "orchestrator"
+      ],
+      "tone": "purple"
+    },
+    {
+      "id": "ves",
+      "label": "Video Encoding Service",
+      "contains": [
+        "optimus",
+        "splitter",
+        "stratum",
+        "validator",
+        "notifier"
+      ],
+      "tone": "blue"
+    },
+    {
+      "id": "stratum",
+      "label": "Stratum functions on Titus",
+      "contains": [
+        "encode1",
+        "encode2",
+        "encode3",
+        "assembler"
+      ],
+      "tone": "orange",
+      "boundary": "dashed"
+    },
+    {
+      "id": "other",
+      "label": "Validation",
+      "contains": [
+        "validation"
+      ],
+      "tone": "green"
+    }
+  ]
+}
