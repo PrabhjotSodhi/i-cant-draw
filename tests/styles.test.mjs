@@ -6,7 +6,7 @@ const box = { x: 0, y: 0, width: 200, height: 80 };
 describe('loadStyle', () => {
   it('defaults to crayon and rejects unknown names', () => {
     expect(loadStyle().name).toBe('crayon');
-    expect(() => loadStyle('nope')).toThrow(/unknown style "nope"; valid: quiet, crayon$/);
+    expect(() => loadStyle('nope')).toThrow(/unknown style "nope"; valid: quiet, crayon, riso, whiteboard, notebook, watercolour/);
   });
 });
 
