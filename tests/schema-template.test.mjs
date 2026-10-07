@@ -1,10 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'fs';
+import { mkdtempSync, readFileSync } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import { validateSpec } from '../scripts/validate-spec.mjs';
 import { schemaLayout } from '../scripts/templates/schema.mjs';
 import { assertLayout } from '../scripts/layout-contract.mjs';
 import { lintLayout } from '../scripts/layout-lint.mjs';
 import { straight, boxDistanceToSection } from '../scripts/templates/route.mjs';
-import { loadStyle } from '../scripts/styles/index.mjs';
+import { loadStyle, STYLE_NAMES } from '../scripts/styles/index.mjs';
 
 const quiet = loadStyle('quiet');
 const column = (name, type, key) => ({ name, type, ...(key ? { key } : {}) });
@@ -26,11 +29,43 @@ const shop = () => ({
   ],
   groups: [{ id: 'sales', label: 'Sales', contains: ['orders', 'addresses'], tone: 'blue' }],
 });
+const errorsOf = (spec) => validateSpec(spec).errors.join('\n');
 const portY = (layout, id, name, spec) => {
   const node = layout.nodes.find(n => n.id === id);
   const index = spec.nodes.find(n => n.id === id).columns.findIndex(c => c.name === name);
   return node.y + node.rows[index].y;
 };
+
+describe('validateSpec: schema template', () => {
+  it('accepts a schema with relations, a self-relation and two relations between one pair', () => {
+    expect(validateSpec(shop()).errors).toEqual([]);
+  });
+  it('needs fromColumn and toColumn to name real columns', () => {
+    const spec = shop(); spec.edges[0].fromColumn = 'customer_id';
+    expect(errorsOf(spec)).toMatch(/edge orders\.customer_id→users\.id: table "orders" has no column "customer_id"/);
+    const missing = shop(); delete missing.edges[0].toColumn;
+    expect(errorsOf(missing)).toMatch(/edge orders\.user_id→users: needs fromColumn and toColumn/);
+  });
+  it('joins tables only', () => {
+    const spec = shop(); spec.nodes.push({ id: 'note', kind: 'note', label: 'Note', row: 2, col: 0 });
+    spec.edges.push({ from: 'note', fromColumn: 'x', to: 'users', toColumn: 'id', ends: ['many', 'one'] });
+    expect(errorsOf(spec)).toMatch(/edge note\.x→users\.id: "note" is not a table/);
+  });
+  it('needs ends of one or many at both ends', () => {
+    const spec = shop(); spec.edges[0].ends = ['many'];
+    expect(errorsOf(spec)).toMatch(/edge orders\.user_id→users\.id: ends needs two of one, many/);
+    const arrow = shop(); arrow.edges[0].ends = ['many', 'arrow'];
+    expect(errorsOf(arrow)).toMatch(/ends needs two of one, many/);
+  });
+  it('rejects many-to-many and asks for a junction table', () => {
+    const spec = shop(); spec.edges[0].ends = ['many', 'many'];
+    expect(errorsOf(spec)).toMatch(/edge orders\.user_id→users\.id: many-to-many is not allowed\. Add a junction table/);
+  });
+  it('allows two tables that point at each other', () => {
+    const spec = shop(); spec.edges.push({ from: 'users', fromColumn: 'name', to: 'orders', toColumn: 'id', ends: ['one', 'one'] });
+    expect(errorsOf(spec)).not.toMatch(/use one edge/);
+  });
+});
 
 describe('schemaLayout', () => {
   const spec = shop();
@@ -127,6 +162,14 @@ describe('schemaLayout', () => {
   });
   it('passes the layout lint', () => {
     expect(lintLayout(layout, spec)).toEqual([]);
+  });
+  it('renders in every style with zero collisions and a clean lint', async () => {
+    const { runPipeline } = await import('../scripts/pipeline.mjs');
+    for (const style of STYLE_NAMES) {
+      const r = await runPipeline({ ...spec, style }, { outputDir: mkdtempSync(join(tmpdir(), 'schema-')), baseName: style });
+      expect(r.collisions, style).toEqual([]);
+      expect(r.lint, style).toEqual([]);
+    }
   });
 });
 
