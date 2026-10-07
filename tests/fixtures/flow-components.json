@@ -1,0 +1,188 @@
+{
+  "template": "flow",
+  "style": "quiet",
+  "title": "Video upload, components",
+  "nodes": [
+    {
+      "id": "creator",
+      "label": "Creator",
+      "kind": "actor",
+      "row": 1,
+      "col": 0
+    },
+    {
+      "id": "app",
+      "label": "Upload app",
+      "subtitle": "pick, trim, caption, post",
+      "row": 1,
+      "col": 1
+    },
+    {
+      "id": "api",
+      "label": "Upload API",
+      "subtitle": "takes chunks, resumes after a drop",
+      "row": 1,
+      "col": 2
+    },
+    {
+      "id": "workers",
+      "label": "Transcode workers",
+      "subtitle": "one per output size",
+      "row": 1,
+      "col": 3
+    },
+    {
+      "id": "limiter",
+      "label": "Rate limiter",
+      "subtitle": "checks each caption call against the daily quota",
+      "row": 0,
+      "col": 4
+    },
+    {
+      "id": "storage",
+      "label": "Storage client",
+      "subtitle": "one write at a time, retried",
+      "row": 1,
+      "col": 4
+    },
+    {
+      "id": "moderation",
+      "label": "Content check",
+      "subtitle": "before publish, again on report",
+      "row": 3,
+      "col": 3
+    },
+    {
+      "id": "publisher",
+      "label": "Publisher",
+      "subtitle": "the one step that goes public",
+      "row": 3,
+      "col": 4
+    },
+    {
+      "id": "captions",
+      "label": "Caption model",
+      "subtitle": "speech to text",
+      "icon": "cloud",
+      "row": 0,
+      "col": 5
+    },
+    {
+      "id": "videos",
+      "label": "Video store",
+      "subtitle": "originals and renditions",
+      "icon": "database",
+      "row": 1,
+      "col": 5
+    },
+    {
+      "id": "thumbnails",
+      "label": "Thumbnail jobs",
+      "subtitle": "frames from every video",
+      "icon": "cloud",
+      "row": 2,
+      "col": 5
+    },
+    {
+      "id": "cdn",
+      "label": "CDN origin",
+      "subtitle": "playback files out",
+      "icon": "documents",
+      "row": 3,
+      "col": 5
+    }
+  ],
+  "edges": [
+    {
+      "from": "creator",
+      "to": "app",
+      "main": true
+    },
+    {
+      "from": "app",
+      "to": "api",
+      "label": "upload, pause, resume",
+      "main": true
+    },
+    {
+      "from": "api",
+      "to": "workers",
+      "label": "jobs",
+      "main": true
+    },
+    {
+      "from": "workers",
+      "to": "storage",
+      "main": true
+    },
+    {
+      "from": "storage",
+      "to": "videos",
+      "label": "writes",
+      "main": true
+    },
+    {
+      "from": "workers",
+      "to": "limiter",
+      "label": "every caption call"
+    },
+    {
+      "from": "limiter",
+      "to": "captions",
+      "label": "caption calls"
+    },
+    {
+      "from": "storage",
+      "to": "thumbnails",
+      "label": "frames"
+    },
+    {
+      "from": "api",
+      "to": "moderation",
+      "label": "before publish"
+    },
+    {
+      "from": "moderation",
+      "to": "publisher",
+      "label": "pass only"
+    },
+    {
+      "from": "publisher",
+      "to": "cdn",
+      "label": "playback files"
+    }
+  ],
+  "groups": [
+    {
+      "id": "account",
+      "label": "Cloud account",
+      "contains": [
+        "service",
+        "managed"
+      ]
+    },
+    {
+      "id": "service",
+      "label": "Upload service",
+      "contains": [
+        "app",
+        "api",
+        "workers",
+        "limiter",
+        "storage",
+        "moderation",
+        "publisher"
+      ]
+    },
+    {
+      "id": "managed",
+      "label": "Private managed services",
+      "contains": [
+        "captions",
+        "videos",
+        "thumbnails",
+        "cdn"
+      ]
+    }
+  ]
+}

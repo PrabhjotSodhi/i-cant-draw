@@ -3,7 +3,7 @@ import { convertToPng } from '../scripts/convert-png.mjs';
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="60"><rect width="100%" height="100%" fill="#fff"/><text x="100" y="30" text-anchor="middle" font-family="Inter" font-size="18">Hello Inter</text></svg>`;
 
-describe('convertToPng v2', () => {
+describe('convertToPng', () => {
   it('renders text with bundled fonts only (no system fonts)', () => {
     const png = convertToPng(svg);
     expect(png.length).toBeGreaterThan(1000);
