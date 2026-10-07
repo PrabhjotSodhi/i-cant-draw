@@ -80,3 +80,15 @@ describe('draw: end labels', () => {
   });
 });
 
+describe('draw: crayon label outline', () => {
+  const crayon = loadStyle('crayon');
+  it('outlines crayon labels in paper colour instead of boxing them', () => {
+    const { svg } = draw(layout(), spec, crayon);
+    expect(svg).toMatch(/<text[^>]*paint-order="stroke"[^>]*>rows</);
+    expect(svg).not.toContain('<rect x="330" y="81" width="40" height="18"');
+  });
+  it('keeps the box behind quiet labels', () => {
+    const { svg } = draw(layout(), spec, quiet);
+    expect(svg).toContain('<rect x="330" y="81" width="40" height="18"');
+  });
+});

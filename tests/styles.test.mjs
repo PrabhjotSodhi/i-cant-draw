@@ -3,6 +3,13 @@ import { loadStyle } from '../scripts/styles/index.mjs';
 
 const box = { x: 0, y: 0, width: 200, height: 80 };
 
+describe('loadStyle', () => {
+  it('defaults to crayon and rejects unknown names', () => {
+    expect(loadStyle().name).toBe('crayon');
+    expect(() => loadStyle('nope')).toThrow(/unknown style "nope"; valid: quiet, crayon$/);
+  });
+});
+
 describe('quiet style', () => {
   const quiet = loadStyle('quiet');
   it('provides the full interface', () => {
@@ -32,4 +39,27 @@ describe('quiet style', () => {
     expect(defs).toContain('id="quiet-head"');
     expect(defs).toContain('id="quiet-head-main"');
   });
+});
+
+describe('end markers', () => {
+  const points = [{ x: 0, y: 50 }, { x: 200, y: 50 }];
+  const shapes = (svg) => (svg.match(/<(path|polygon)\b/g) || []).length;
+  for (const name of ['quiet', 'crayon']) {
+    const style = loadStyle(name);
+    const ctx = () => ({ random: (() => { let i = 0; return () => ((i++ * 0.37) % 1); })() });
+    const draw = (opts) => style.line(points, opts, ctx());
+    it(`${name}: a bare line draws nothing extra at its ends`, () => {
+      expect(draw({ endMarker: 'none', startMarker: 'none' })).toBe(draw({}));
+    });
+    it(`${name}: one, many and triangle each add a marker at the end they name`, () => {
+      const bare = draw({});
+      for (const marker of ['one', 'many', 'triangle']) {
+        const end = draw({ endMarker: marker }), start = draw({ startMarker: marker });
+        expect(end, marker).not.toBe(bare);
+        expect(start, marker).not.toBe(end);
+      }
+      expect(shapes(draw({ endMarker: 'triangle' }))).toBeGreaterThan(shapes(bare));
+      expect(draw({ endMarker: 'triangle' })).toContain('fill="#FFFFFF"');
+    });
+  }
 });
