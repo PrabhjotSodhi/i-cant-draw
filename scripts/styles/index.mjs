@@ -1,7 +1,8 @@
 import quiet from './quiet.mjs';
+import crayon from './crayon.mjs';
 import { systemFont } from './fonts.mjs';
 
-const STYLES = { quiet };
+const STYLES = { quiet, crayon };
 
 export const STYLE_NAMES = Object.keys(STYLES);
 

@@ -74,6 +74,53 @@ describe('sizeCards', () => {
   });
 });
 
+describe('sizeCards decisions', () => {
+  const crayon = loadStyle('crayon');
+  // The title box's corner must sit inside the diamond: half-width over half the diamond width plus half-height over half its height.
+  const fits = (style, label, size) => {
+    const width = style.measure(label, style.typeScale.title, style.typeScale.titleWeight) + 2 * style.cardSize.padX;
+    const height = style.typeScale.title * style.typeScale.lineHeight;
+    return width / size.width + height / size.height <= 1;
+  };
+  it('makes a decision 1.5 times as wide as it is tall, narrower than the cards beside it', () => {
+    const sizes = sizeCards({ nodes: [
+      { id: 'a', label: 'Card', subtitle: 'a subtitle that wraps onto a second line here', col: 0 },
+      { id: 'd', label: 'Valid?', kind: 'decision', col: 1 },
+    ] }, quiet, () => 'cards');
+    const d = sizes.get('d');
+    expect(Math.abs(d.width - 1.5 * d.height)).toBeLessThanOrEqual(1);
+    expect(d.width).toBeLessThan(sizes.get('a').width);
+  });
+  it('fits the title inside the diamond in quiet and crayon', () => {
+    for (const style of [quiet, crayon]) {
+      for (const label of ['Valid?', 'Quality gate', 'Good enough?', 'Is the customer eligible?']) {
+        const d = sizeCards({ nodes: [{ id: 'd', label, kind: 'decision', col: 0 }] }, style, () => 'cards').get('d');
+        expect(fits(style, label, d), `${label} in ${style.name}`).toBe(true);
+        expect(Math.abs(d.width - 1.5 * d.height)).toBeLessThanOrEqual(1);
+      }
+    }
+  });
+  it('grows a decision taller than 1.4 cards only when its title needs it', () => {
+    const nodes = (label) => [{ id: 'a', label: 'Card', col: 0 }, { id: 'd', label, kind: 'decision', col: 1 }];
+    const short = sizeCards({ nodes: nodes('Ok?') }, quiet, () => 'cards');
+    const long = sizeCards({ nodes: nodes('Is the customer eligible?') }, quiet, () => 'cards');
+    expect(short.get('d').height).toBe(Math.round(1.4 * short.get('a').height));
+    expect(long.get('d').height).toBeGreaterThan(Math.round(1.4 * long.get('a').height));
+  });
+  it('leaves the card width to the cards', () => {
+    const sizes = sizeCards({ nodes: [
+      { id: 'a', label: 'Card', col: 0 },
+      { id: 'd', label: 'Is the customer eligible for a refund?', kind: 'decision', col: 1 },
+    ] }, quiet, () => 'cards');
+    expect(sizes.get('a').width).toBe(quiet.cardSize.minWidth);
+  });
+  it('throws a SpecError naming the node when the title cannot fit in the widest diamond', () => {
+    const label = 'Has the customer been eligible for a refund?';
+    expect(() => sizeCards({ nodes: [{ id: 'refund', label, kind: 'decision', col: 0 }] }, quiet, () => 'cards')).toThrow(SpecError);
+    expect(() => sizeCards({ nodes: [{ id: 'refund', label, kind: 'decision', col: 0 }] }, quiet, () => 'cards')).toThrow(/node "refund"/);
+  });
+});
+
 describe('sizeCards edge cases', () => {
   it('gives decisions a height when no card sets one', () => {
     const sizes = sizeCards({ nodes: [{ id: 'd', label: 'Valid?', kind: 'decision', col: 0 }] }, quiet, () => 'cards');
