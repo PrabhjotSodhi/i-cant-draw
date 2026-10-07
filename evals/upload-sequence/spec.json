@@ -1,0 +1,119 @@
+{
+  "title": "Photo upload with large files",
+  "actors": [
+    {
+      "id": "app",
+      "label": "Phone app",
+      "category": "human"
+    },
+    {
+      "id": "gateway",
+      "label": "API Gateway and\nLoad Balancer",
+      "category": "input"
+    },
+    {
+      "id": "upload",
+      "label": "Upload Service",
+      "category": "process"
+    },
+    {
+      "id": "storage",
+      "label": "Object Storage",
+      "category": "data-source"
+    },
+    {
+      "id": "queue",
+      "label": "Message Queue",
+      "category": "data-source"
+    }
+  ],
+  "messages": [
+    {
+      "from": "app",
+      "to": "gateway",
+      "label": "POST /photos"
+    },
+    {
+      "from": "gateway",
+      "to": "upload",
+      "label": "Forward request"
+    },
+    {
+      "from": "upload",
+      "to": "upload",
+      "label": "Check type, measure size"
+    },
+    {
+      "from": "upload",
+      "to": "storage",
+      "label": "Multipart upload"
+    },
+    {
+      "from": "storage",
+      "to": "upload",
+      "label": "Upload complete",
+      "kind": "return"
+    },
+    {
+      "from": "upload",
+      "to": "queue",
+      "label": "Publish photo reference",
+      "kind": "async"
+    },
+    {
+      "from": "queue",
+      "to": "upload",
+      "label": "Acknowledgement",
+      "kind": "return"
+    },
+    {
+      "from": "upload",
+      "to": "queue",
+      "label": "Publish photo inline",
+      "kind": "async"
+    },
+    {
+      "from": "queue",
+      "to": "upload",
+      "label": "Acknowledgement",
+      "kind": "return"
+    },
+    {
+      "from": "upload",
+      "to": "gateway",
+      "label": "202 Accepted",
+      "kind": "return"
+    },
+    {
+      "from": "gateway",
+      "to": "app",
+      "label": "202 Accepted",
+      "kind": "return"
+    }
+  ],
+  "fragments": [
+    {
+      "kind": "alt",
+      "regions": [
+        {
+          "guard": "Photo > 5MB",
+          "messages": [
+            3,
+            4,
+            5,
+            6
+          ]
+        },
+        {
+          "guard": "Photo < 5MB",
+          "messages": [
+            7,
+            8
+          ]
+        }
+      ]
+    }
+  ],
+  "template": "sequence",
+  "style": "quiet"
+}
