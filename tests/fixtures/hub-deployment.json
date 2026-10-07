@@ -1,0 +1,162 @@
+{
+  "template": "hub",
+  "style": "quiet",
+  "title": "URL shortener, deployment",
+  "slots": {
+    "center": "vm",
+    "left": [
+      "cache",
+      "secrets",
+      "logs"
+    ],
+    "right": [
+      "analytics",
+      "db"
+    ],
+    "top": [
+      "bucket"
+    ],
+    "bottom": [
+      "engineer"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "shortener",
+      "label": "Link service",
+      "subtitle": "no public port, gateway only"
+    },
+    {
+      "id": "cache",
+      "label": "Redirect cache",
+      "subtitle": "hot links kept in memory",
+      "icon": "cloud"
+    },
+    {
+      "id": "secrets",
+      "label": "Config and secrets",
+      "subtitle": "domain, signing key, password",
+      "icon": "file"
+    },
+    {
+      "id": "logs",
+      "label": "Access logs",
+      "subtitle": "every redirect served",
+      "icon": "documents"
+    },
+    {
+      "id": "analytics",
+      "label": "Click analytics",
+      "subtitle": "daily click counts",
+      "icon": "cloud"
+    },
+    {
+      "id": "db",
+      "label": "Links database",
+      "subtitle": "short code to long URL",
+      "icon": "database"
+    },
+    {
+      "id": "bucket",
+      "label": "Artifact bucket",
+      "subtitle": "build in, nightly backup out",
+      "icon": "documents"
+    },
+    {
+      "id": "engineer",
+      "label": "On-call engineer",
+      "subtitle": "bastion login, no open port",
+      "kind": "actor"
+    }
+  ],
+  "edges": [
+    {
+      "from": "shortener",
+      "to": "cache",
+      "label": "lookups",
+      "main": true
+    },
+    {
+      "from": "shortener",
+      "to": "secrets",
+      "label": "at start and on change",
+      "style": "dashed"
+    },
+    {
+      "from": "shortener",
+      "to": "logs",
+      "style": "dashed"
+    },
+    {
+      "from": "shortener",
+      "to": "analytics",
+      "label": "clicks",
+      "main": true
+    },
+    {
+      "from": "shortener",
+      "to": "db",
+      "label": "reads and writes",
+      "main": true
+    },
+    {
+      "from": "shortener",
+      "to": "bucket",
+      "label": "build in, backup out",
+      "both": true,
+      "main": true
+    },
+    {
+      "from": "engineer",
+      "to": "shortener",
+      "label": "admin session",
+      "main": true
+    }
+  ],
+  "groups": [
+    {
+      "id": "account",
+      "label": "Cloud account, private network",
+      "contains": [
+        "managed",
+        "data",
+        "vm",
+        "bucket"
+      ]
+    },
+    {
+      "id": "managed",
+      "label": "Managed services",
+      "contains": [
+        "cache",
+        "secrets",
+        "logs"
+      ]
+    },
+    {
+      "id": "data",
+      "label": "Data",
+      "contains": [
+        "analytics",
+        "db"
+      ]
+    },
+    {
+      "id": "vm",
+      "label": "Virtual machine",
+      "contains": [
+        "container"
+      ],
+      "tone": "blue"
+    },
+    {
+      "id": "container",
+      "label": "Container",
+      "contains": [
+        "shortener"
+      ],
+      "tone": "blue",
+      "boundary": "dashed"
+    }
+  ]
+}
