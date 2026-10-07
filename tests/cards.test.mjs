@@ -127,3 +127,13 @@ describe('sizeCards edge cases', () => {
     expect(sizes.get('d').height).toBeGreaterThan(0);
   });
 });
+
+describe('sizeCards: state kinds', () => {
+  it('gives start and end fixed sizes, and states the shared card size', () => {
+    const sizes = sizeCards({ nodes: [{ id: 's', kind: 'start' }, { id: 'e', kind: 'end' }, { id: 'r', kind: 'state', label: 'Running' }, { id: 'c', label: 'A longer card title' }] }, quiet, () => 'cards');
+    expect([sizes.get('s').width, sizes.get('s').height]).toEqual([20, 20]);
+    expect([sizes.get('e').width, sizes.get('e').height]).toEqual([26, 26]);
+    expect(sizes.get('r').width).toBe(sizes.get('c').width);
+    expect(sizes.get('r').height).toBe(sizes.get('c').height);
+  });
+});

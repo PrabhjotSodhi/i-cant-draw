@@ -1,0 +1,1 @@
+Draw the states one build moves through. A pushed commit puts a build in Queued. A runner picks it up, and it stays Running through each step. When it times out or the runner is lost, it is Blocked until an engineer retries it. After all steps pass, it waits for code review. When the reviewer approves, it is ready to deploy, and an engineer deploys it.

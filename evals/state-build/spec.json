@@ -1,0 +1,30 @@
+{
+  "template": "state",
+  "title": "Life of a build",
+  "nodes": [
+    { "id": "start", "kind": "start", "row": 0, "col": 0 },
+    { "id": "queued", "kind": "state", "label": "Queued", "row": 0, "col": 1 },
+    { "id": "running", "kind": "state", "label": "Running", "row": 0, "col": 2 },
+    { "id": "review", "kind": "state", "label": "Code review", "row": 0, "col": 3 },
+    { "id": "deployable", "kind": "state", "label": "Ready to deploy", "row": 0, "col": 4 },
+    { "id": "deployed", "kind": "state", "label": "Deployed", "row": 0, "col": 5 },
+    { "id": "end", "kind": "end", "row": 0, "col": 6 },
+    { "id": "blocked", "kind": "state", "label": "Blocked", "row": 1, "col": 2 }
+  ],
+  "edges": [
+    { "from": "start", "to": "queued", "label": "commit pushed" },
+    { "from": "queued", "to": "running", "label": "runner picks it up", "main": true },
+    { "from": "running", "to": "running", "label": "next step" },
+    { "from": "running", "to": "review", "label": "all steps pass", "main": true },
+    { "from": "review", "to": "deployable", "label": "reviewer approves", "main": true },
+    { "from": "deployable", "to": "deployed", "label": "engineer deploys", "main": true },
+    { "from": "deployed", "to": "end" },
+    { "from": "running", "to": "blocked", "label": "timed out or runner lost" },
+    { "from": "blocked", "to": "running", "label": "engineer retries" }
+  ],
+  "groups": [
+    { "id": "working", "label": "Working", "contains": ["queued", "running", "review"], "tone": "blue" },
+    { "id": "paused", "label": "Paused", "contains": ["blocked"], "tone": "orange" },
+    { "id": "done", "label": "Done", "contains": ["deployable", "deployed"], "tone": "green" }
+  ]
+}
