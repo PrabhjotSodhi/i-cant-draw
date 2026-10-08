@@ -8,7 +8,7 @@
     {
       "name": "i-cant-draw",
       "source": ".",
-      "description": "You can't draw. Now you don't have to. Claude turns one sentence into a clean, hand-drawn-looking diagram."
+      "description": "You can't draw. Now you don't have to. Your coding agent turns one sentence into a clean, hand-drawn-looking diagram."
     }
   ]
 }
