@@ -20,6 +20,29 @@
 
 Then ask Claude for any diagram, in plain words.
 
+### Other coding agents
+
+The engine is plain Node, so other agents that read skill folders can use it too. Clone the repo where it can stay, then install the skill for your agent:
+
+```
+git clone https://github.com/PrabhjotSodhi/i-cant-draw.git
+cd i-cant-draw
+node scripts/setup.mjs --host codex
+```
+
+`--host auto` installs for every agent below that it finds. Add `--style riso` or another style to change the default.
+
+| Agent | `--host` | Skill folder | Tried for real |
+| --- | --- | --- | --- |
+| OpenAI Codex CLI | `codex` | `~/.codex/skills` (or `$CODEX_HOME/skills`) | Not yet |
+| OpenCode | `opencode` | `~/.config/opencode/skills` | Not yet |
+| Cursor | `cursor` | `~/.cursor/skills` | Not yet |
+| Factory Droid | `factory` | `~/.factory/skills` | Not yet |
+| Kiro | `kiro` | `~/.kiro/skills` | Not yet |
+| GitHub Copilot CLI | `copilot` | `~/.copilot/skills` | Not yet |
+
+An agent that cannot view images still draws. It skips the review step and says so. To remove the skill, delete its `i-cant-draw` folder.
+
 ## Use it to
 
 ### 1. Learn how anything works
@@ -118,7 +141,7 @@ Claude picks the layout that fits what you asked.
 
 ## Requirements
 
-- Claude Code with plugin support.
+- Claude Code with plugin support, or one of the agents above.
 - Node 18 or later.
 - macOS for the risograph, whiteboard, notebook and watercolour fonts. Elsewhere those styles draw in Inter.
 

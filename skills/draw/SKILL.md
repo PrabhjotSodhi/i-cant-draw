@@ -51,6 +51,8 @@ Layout warnings print after a successful render and land in `<name>.lint.json`. 
 2. Read the rendered PNG.
 3. Return the JSON critique the judge prompt describes.
 
+If you cannot view images, skip Phases 3 and 4. Deliver the render and tell the user nobody reviewed the picture.
+
 ## Phase 4: Fix
 
 If the judge returns `"pass": false`, fix the spec for each critique:

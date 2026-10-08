@@ -33,7 +33,7 @@ sentence -> Claude writes a spec -> validate -> template (positions) -> style (S
 
 ## Where code lives
 
-- `scripts/render.mjs` is the command line. `scripts/pipeline.mjs` is the library behind it.
+- `scripts/render.mjs` is the command line. `scripts/pipeline.mjs` is the library behind it. `scripts/setup.mjs` installs the skill for coding agents other than Claude Code.
 - `scripts/templates/` turns specs into layouts. `cards.mjs` sizes cards and `route.mjs` shapes lines.
 - `scripts/styles/` holds one file per style, plus shared helpers and font loading.
 - `scripts/render/` holds drawing shared by every style: the SVG assembly, icons, line-end markers, seeded randomness.
