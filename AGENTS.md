@@ -12,7 +12,7 @@ Claude plans and the engine draws. Claude writes a small JSON spec and places ea
 
 ## Glossary
 
-- **spec**: the JSON a diagram is made from. `references/spec-schema.json` is the authority.
+- **spec**: the JSON a diagram is made from. `skills/i-cant-draw/references/spec-schema.json` is the authority.
 - **template**: turns a spec into positions. Flow, hub, sequence, state, schema and class.
 - **layout**: what a template returns: boxes, zones, line sections and label boxes, in drawing units.
 - **style**: turns a layout into SVG. It draws and never moves anything.
@@ -33,13 +33,20 @@ sentence -> Claude writes a spec -> validate -> template (positions) -> style (S
 
 ## Where code lives
 
-- `scripts/render.mjs` is the command line. `scripts/pipeline.mjs` is the library behind it. `scripts/setup.mjs` installs the skill for coding agents other than Claude Code.
+`skills/i-cant-draw/` is the whole skill, and installers copy it as one folder. Everything it needs at run time lives inside it, and nothing inside it reaches outside.
+
+- `SKILL.md` is what the agent loads. Its paths are relative to its own folder.
+- `package.json` lists the engine's two packages.
+- `scripts/render.mjs` is the command line. `scripts/pipeline.mjs` is the library behind it.
 - `scripts/templates/` turns specs into layouts. `cards.mjs` sizes cards and `route.mjs` shapes lines.
 - `scripts/styles/` holds one file per style, plus shared helpers and font loading.
 - `scripts/render/` holds drawing shared by every style: the SVG assembly, icons, line-end markers, seeded randomness.
 - `scripts/` top level holds the checks: spec validation, the layout contract, the collision gate and the lint.
-- `references/` holds what Claude reads at run time: prompts, layout guides, the spec schema and the bundled fonts.
-- `skills/draw/SKILL.md` is the skill Claude Code loads.
+- `references/` holds what the agent reads at run time: prompts, layout guides, the spec schema, the goldens and the bundled fonts.
+
+Outside the skill folder:
+
+- `scripts/` at the repo root holds the eval runners.
 - `evals/` holds one folder per eval case: a request and the spec that answers it.
 - `tests/` holds the vitest tests. `tests/fixtures/` holds specs only the tests use.
 

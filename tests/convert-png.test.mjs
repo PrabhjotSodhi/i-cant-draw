@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { convertToPng } from '../scripts/convert-png.mjs';
+import { convertToPng } from '../skills/i-cant-draw/scripts/convert-png.mjs';
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="60"><rect width="100%" height="100%" fill="#fff"/><text x="100" y="30" text-anchor="middle" font-family="Inter" font-size="18">Hello Inter</text></svg>`;
 

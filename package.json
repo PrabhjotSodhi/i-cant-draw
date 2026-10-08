@@ -6,7 +6,7 @@
   "scripts": {
     "test": "vitest run",
     "eval": "node scripts/run-evals.mjs",
-    "render": "node scripts/render.mjs",
+    "render": "node skills/i-cant-draw/scripts/render.mjs",
     "eval:planner": "node scripts/run-planner-evals.mjs"
   },
   "devDependencies": {

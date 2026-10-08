@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync, existsSync } from 'fs';
-import { ICONS } from '../scripts/render/icons.mjs';
+import { ICONS } from '../skills/i-cant-draw/scripts/render/icons.mjs';
 
-const schema = JSON.parse(readFileSync(new URL('../references/spec-schema.json', import.meta.url)));
+const schema = JSON.parse(readFileSync(new URL('../skills/i-cant-draw/references/spec-schema.json', import.meta.url)));
 const evalDirs = readdirSync(new URL('../evals/', import.meta.url), { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name);
 const specs = [
   ...evalDirs.map(d => new URL(`../evals/${d}/spec.json`, import.meta.url)).filter(u => existsSync(u)),

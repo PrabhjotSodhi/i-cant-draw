@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
-import { sequenceLayout, sequenceRenderSpec } from '../scripts/sequence-layout.mjs';
-import { draw, styleAsTheme } from '../scripts/render/draw.mjs';
-import { loadStyle } from '../scripts/styles/index.mjs';
-import { checkCollisions } from '../scripts/collision-check.mjs';
+import { sequenceLayout, sequenceRenderSpec } from '../skills/i-cant-draw/scripts/sequence-layout.mjs';
+import { draw, styleAsTheme } from '../skills/i-cant-draw/scripts/render/draw.mjs';
+import { loadStyle } from '../skills/i-cant-draw/scripts/styles/index.mjs';
+import { checkCollisions } from '../skills/i-cant-draw/scripts/collision-check.mjs';
 
 const quiet = loadStyle('quiet');
 const spec = { ...JSON.parse(readFileSync(new URL('../evals/upload-sequence/spec.json', import.meta.url))), template: 'sequence' };

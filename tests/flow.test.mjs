@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
-import { flowLayout } from '../scripts/templates/flow.mjs';
-import { SpecError } from '../scripts/templates/cards.mjs';
-import { assertLayout } from '../scripts/layout-contract.mjs';
-import { loadStyle } from '../scripts/styles/index.mjs';
-import { draw } from '../scripts/render/draw.mjs';
+import { flowLayout } from '../skills/i-cant-draw/scripts/templates/flow.mjs';
+import { SpecError } from '../skills/i-cant-draw/scripts/templates/cards.mjs';
+import { assertLayout } from '../skills/i-cant-draw/scripts/layout-contract.mjs';
+import { loadStyle } from '../skills/i-cant-draw/scripts/styles/index.mjs';
+import { draw } from '../skills/i-cant-draw/scripts/render/draw.mjs';
 
 const quiet = loadStyle('quiet');
 const spec = JSON.parse(readFileSync(new URL('./fixtures/flow-components.json', import.meta.url)));
@@ -76,9 +76,9 @@ describe('flowLayout: cells and positions', () => {
   });
 });
 
-import { boxDistanceToSection } from '../scripts/templates/route.mjs';
-import { draw } from '../scripts/render/draw.mjs';
-import { checkCollisions } from '../scripts/collision-check.mjs';
+import { boxDistanceToSection } from '../skills/i-cant-draw/scripts/templates/route.mjs';
+import { draw } from '../skills/i-cant-draw/scripts/render/draw.mjs';
+import { checkCollisions } from '../skills/i-cant-draw/scripts/collision-check.mjs';
 
 const card = (id, row, col, extra = {}) => ({ id, label: id.toUpperCase(), row, col, ...extra });
 const edgeTo = (l, s, from, to) => l.edges.find(e => s.edges[e.index].from === from && s.edges[e.index].to === to);
@@ -187,7 +187,7 @@ describe('flowLayout: routes', () => {
   });
 });
 
-import { lintLayout } from '../scripts/layout-lint.mjs';
+import { lintLayout } from '../skills/i-cant-draw/scripts/layout-lint.mjs';
 const rules = findings => [...new Set(findings.map(f => f.rule))];
 
 describe('flowLayout: review fixes', () => {

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { mkdtempSync, readFileSync, existsSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import { runPipeline } from '../scripts/pipeline.mjs';
+import { runPipeline } from '../skills/i-cant-draw/scripts/pipeline.mjs';
 
 const fixtureFrom = path => JSON.parse(readFileSync(new URL(path, import.meta.url)));
 const fixture = name => JSON.parse(readFileSync(new URL(`./fixtures/${name}.json`, import.meta.url)));

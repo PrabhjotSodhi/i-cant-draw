@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { sizeCards, SpecError } from '../scripts/templates/cards.mjs';
-import { loadStyle } from '../scripts/styles/index.mjs';
+import { sizeCards, SpecError } from '../skills/i-cant-draw/scripts/templates/cards.mjs';
+import { loadStyle } from '../skills/i-cant-draw/scripts/styles/index.mjs';
 
 const quiet = loadStyle('quiet');
 const byCol = n => n.col;

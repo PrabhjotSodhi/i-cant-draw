@@ -4,8 +4,8 @@ import { join, dirname } from 'path';
 import { homedir, tmpdir, userInfo } from 'os';
 import { spawnSync } from 'child_process';
 import { fileURLToPath } from 'url';
-import { validateSpec } from './validate-spec.mjs';
-import { runPipeline } from './pipeline.mjs';
+import { validateSpec } from '../skills/i-cant-draw/scripts/validate-spec.mjs';
+import { runPipeline } from '../skills/i-cant-draw/scripts/pipeline.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
@@ -14,11 +14,11 @@ const outRoot = option('--out') || mkdtempSync(join(tmpdir(), 'planner-evals-'))
 const model = option('--model');
 const claude = [process.env.CLAUDE_BIN, join(homedir(), '.local/bin/claude')].find(p => p && existsSync(p)) || 'claude';
 
-const templateDir = join(root, 'references/templates');
+const templateDir = join(root, 'skills/i-cant-draw/references/templates');
 // One call cannot pick a template and then read its file, so every template file follows the core prompt.
-const planner = [join(root, 'references/planner-prompt.md'), ...readdirSync(templateDir).sort().map(f => join(templateDir, f))]
+const planner = [join(root, 'skills/i-cant-draw/references/planner-prompt.md'), ...readdirSync(templateDir).sort().map(f => join(templateDir, f))]
   .map(path => readFileSync(path, 'utf-8')).join('\n\n');
-const schema = readFileSync(join(root, 'references/spec-schema.json'), 'utf-8');
+const schema = readFileSync(join(root, 'skills/i-cant-draw/references/spec-schema.json'), 'utf-8');
 
 function ask(prompt) {
   const flags = ['-p', '--tools', '', '--no-session-persistence', '--output-format', 'text', ...(model ? ['--model', model] : [])];

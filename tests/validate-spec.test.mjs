@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { validateSpec } from '../scripts/validate-spec.mjs';
+import { validateSpec } from '../skills/i-cant-draw/scripts/validate-spec.mjs';
 
 const flow = () => ({
   template: 'flow',

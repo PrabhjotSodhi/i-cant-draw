@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
-import { lintLayout } from '../scripts/layout-lint.mjs';
-import { flowLayout } from '../scripts/templates/flow.mjs';
-import { hubLayout } from '../scripts/templates/hub.mjs';
-import { loadStyle } from '../scripts/styles/index.mjs';
+import { lintLayout } from '../skills/i-cant-draw/scripts/layout-lint.mjs';
+import { flowLayout } from '../skills/i-cant-draw/scripts/templates/flow.mjs';
+import { hubLayout } from '../skills/i-cant-draw/scripts/templates/hub.mjs';
+import { loadStyle } from '../skills/i-cant-draw/scripts/styles/index.mjs';
 
 const quiet = loadStyle('quiet');
 const fixture = name => JSON.parse(readFileSync(new URL(`./fixtures/${name}.json`, import.meta.url)));

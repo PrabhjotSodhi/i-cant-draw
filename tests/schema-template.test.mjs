@@ -2,12 +2,12 @@ import { describe, it, expect } from 'vitest';
 import { mkdtempSync, readFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import { validateSpec } from '../scripts/validate-spec.mjs';
-import { schemaLayout } from '../scripts/templates/schema.mjs';
-import { assertLayout } from '../scripts/layout-contract.mjs';
-import { lintLayout } from '../scripts/layout-lint.mjs';
-import { straight, boxDistanceToSection } from '../scripts/templates/route.mjs';
-import { loadStyle, STYLE_NAMES } from '../scripts/styles/index.mjs';
+import { validateSpec } from '../skills/i-cant-draw/scripts/validate-spec.mjs';
+import { schemaLayout } from '../skills/i-cant-draw/scripts/templates/schema.mjs';
+import { assertLayout } from '../skills/i-cant-draw/scripts/layout-contract.mjs';
+import { lintLayout } from '../skills/i-cant-draw/scripts/layout-lint.mjs';
+import { straight, boxDistanceToSection } from '../skills/i-cant-draw/scripts/templates/route.mjs';
+import { loadStyle, STYLE_NAMES } from '../skills/i-cant-draw/scripts/styles/index.mjs';
 
 const quiet = loadStyle('quiet');
 const column = (name, type, key) => ({ name, type, ...(key ? { key } : {}) });
@@ -116,7 +116,7 @@ describe('schemaLayout', () => {
   });
   it('keeps every label clear of the other lines', async () => {
     const { readFileSync } = await import('fs');
-    const { boxDistanceToSection } = await import('../scripts/templates/route.mjs');
+    const { boxDistanceToSection } = await import('../skills/i-cant-draw/scripts/templates/route.mjs');
     const shopSpec = JSON.parse(readFileSync(new URL('../evals/shop-schema/spec.json', import.meta.url)));
     for (const [name, result] of [['fixture', layout], ['shop-schema', schemaLayout(shopSpec, quiet)]]) {
       for (const e of result.edges) {
@@ -164,7 +164,7 @@ describe('schemaLayout', () => {
     expect(lintLayout(layout, spec)).toEqual([]);
   });
   it('renders in every style with zero collisions and a clean lint', async () => {
-    const { runPipeline } = await import('../scripts/pipeline.mjs');
+    const { runPipeline } = await import('../skills/i-cant-draw/scripts/pipeline.mjs');
     for (const style of STYLE_NAMES) {
       const r = await runPipeline({ ...spec, style }, { outputDir: mkdtempSync(join(tmpdir(), 'schema-')), baseName: style });
       expect(r.collisions, style).toEqual([]);

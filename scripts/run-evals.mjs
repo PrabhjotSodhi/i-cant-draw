@@ -2,8 +2,8 @@ import { readFileSync, mkdtempSync } from 'fs';
 import { join, dirname } from 'path';
 import { tmpdir } from 'os';
 import { fileURLToPath } from 'url';
-import { runPipeline } from './pipeline.mjs';
-import { lintLayout } from './layout-lint.mjs';
+import { runPipeline } from '../skills/i-cant-draw/scripts/pipeline.mjs';
+import { lintLayout } from '../skills/i-cant-draw/scripts/layout-lint.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const EVALS = join(__dirname, '..', 'evals');

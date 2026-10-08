@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { existsSync } from 'fs';
-import { systemFont } from '../scripts/styles/fonts.mjs';
-import { measureText } from '../scripts/text-metrics.mjs';
+import { systemFont } from '../skills/i-cant-draw/scripts/styles/fonts.mjs';
+import { measureText } from '../skills/i-cant-draw/scripts/text-metrics.mjs';
 
 const avenir = '/System/Library/Fonts/Avenir Next.ttc';
 

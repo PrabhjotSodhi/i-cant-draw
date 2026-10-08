@@ -2,16 +2,16 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync, mkdtempSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import { validateSpec } from '../scripts/validate-spec.mjs';
+import { validateSpec } from '../skills/i-cant-draw/scripts/validate-spec.mjs';
 
-const read = (path) => readFileSync(new URL(`../references/${path}`, import.meta.url), 'utf-8');
+const read = (path) => readFileSync(new URL(`../skills/i-cant-draw/references/${path}`, import.meta.url), 'utf-8');
 const prompt = read('planner-prompt.md');
-const templateFiles = readdirSync(new URL('../references/templates/', import.meta.url)).filter(f => f.endsWith('.md'));
+const templateFiles = readdirSync(new URL('../skills/i-cant-draw/references/templates/', import.meta.url)).filter(f => f.endsWith('.md'));
 const templates = templateFiles.map(file => {
   const text = read(`templates/${file}`);
   return { name: file.replace(/\.md$/, ''), text, examples: [...text.matchAll(/```json\n([\s\S]*?)```/g)].map(m => JSON.parse(m[1])) };
 });
-const skill = readFileSync(new URL('../skills/draw/SKILL.md', import.meta.url), 'utf-8');
+const skill = readFileSync(new URL('../skills/i-cant-draw/SKILL.md', import.meta.url), 'utf-8');
 
 describe('planner prompt', () => {
   it('names every template and style', () => {
@@ -55,7 +55,7 @@ describe('template files', () => {
     }
   });
   it('renders every example with zero collisions and a clean lint', async () => {
-    const { runPipeline } = await import('../scripts/pipeline.mjs');
+    const { runPipeline } = await import('../skills/i-cant-draw/scripts/pipeline.mjs');
     for (const t of templates) {
       const r = await runPipeline(t.examples[0], { outputDir: mkdtempSync(join(tmpdir(), 'plan-')), baseName: t.name });
       expect(r.collisions, t.name).toEqual([]);
