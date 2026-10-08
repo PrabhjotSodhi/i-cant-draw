@@ -14,8 +14,10 @@
 ## Install
 
 ```
-npx skills add PrabhjotSodhi/i-cant-draw
+npx skills add PrabhjotSodhi/i-cant-draw -g
 ```
+
+`-g` installs it for every project. To install it in the current project only, leave out `-g`.
 
 This works with Claude Code, Codex, Cursor, OpenCode and other coding agents that read skill folders. In Claude Code you can also install it as a plugin:
 
