@@ -2,11 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { mkdtempSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import { classLayout } from '../scripts/templates/class.mjs';
-import { assertLayout } from '../scripts/layout-contract.mjs';
-import { loadStyle } from '../scripts/styles/index.mjs';
-import { runPipeline } from '../scripts/pipeline.mjs';
-import { lintLayout } from '../scripts/layout-lint.mjs';
+import { classLayout } from '../skills/i-cant-draw/scripts/templates/class.mjs';
+import { assertLayout } from '../skills/i-cant-draw/scripts/layout-contract.mjs';
+import { loadStyle } from '../skills/i-cant-draw/scripts/styles/index.mjs';
+import { runPipeline } from '../skills/i-cant-draw/scripts/pipeline.mjs';
+import { lintLayout } from '../skills/i-cant-draw/scripts/layout-lint.mjs';
 
 const quiet = loadStyle('quiet');
 const cls = (id, row, col, extra = {}) => ({ id, kind: 'class', label: id[0].toUpperCase() + id.slice(1), row, col, attributes: ['id: string'], methods: ['save()'], ...extra });

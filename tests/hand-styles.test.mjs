@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
-import { loadStyle } from '../scripts/styles/index.mjs';
-import { flowLayout } from '../scripts/templates/flow.mjs';
-import { hubLayout } from '../scripts/templates/hub.mjs';
-import { draw } from '../scripts/render/draw.mjs';
-import { checkCollisions } from '../scripts/collision-check.mjs';
-import { convertToPng } from '../scripts/convert-png.mjs';
+import { loadStyle } from '../skills/i-cant-draw/scripts/styles/index.mjs';
+import { flowLayout } from '../skills/i-cant-draw/scripts/templates/flow.mjs';
+import { hubLayout } from '../skills/i-cant-draw/scripts/templates/hub.mjs';
+import { draw } from '../skills/i-cant-draw/scripts/render/draw.mjs';
+import { checkCollisions } from '../skills/i-cant-draw/scripts/collision-check.mjs';
+import { convertToPng } from '../skills/i-cant-draw/scripts/convert-png.mjs';
 
 const fixture = (name) => JSON.parse(readFileSync(new URL(`./fixtures/${name}.json`, import.meta.url)));
 const box = { x: 10, y: 10, width: 200, height: 60 };

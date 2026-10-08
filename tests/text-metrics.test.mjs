@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { measureText, estimateNodeSize, LINE_HEIGHT } from '../scripts/text-metrics.mjs';
+import { measureText, estimateNodeSize, LINE_HEIGHT } from '../skills/i-cant-draw/scripts/text-metrics.mjs';
 
 const theme = {
   typeScale: { title: 18, titleWeight: 600, secondary: 15, muted: 13.5,

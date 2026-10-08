@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync, existsSync } from 'fs';
-import { STYLE_NAMES } from '../scripts/styles/index.mjs';
+import { STYLE_NAMES } from '../skills/i-cant-draw/scripts/styles/index.mjs';
 
-const prompt = readFileSync(new URL('../references/judge-prompt.md', import.meta.url), 'utf-8');
+const prompt = readFileSync(new URL('../skills/i-cant-draw/references/judge-prompt.md', import.meta.url), 'utf-8');
 
 describe('judge prompt', () => {
   it('names every critique type', () => {
@@ -26,7 +26,7 @@ describe('judge prompt', () => {
   });
   it('has a hub golden for every style', () => {
     for (const style of STYLE_NAMES) {
-      expect(existsSync(new URL(`../references/goldens/${style}-hub.png`, import.meta.url)), style).toBe(true);
+      expect(existsSync(new URL(`../skills/i-cant-draw/references/goldens/${style}-hub.png`, import.meta.url)), style).toBe(true);
     }
   });
 });

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { side, straight, elbow, zRoute, uRoute, trunkRoute, spreadPorts, labelFor, boxDistanceToSection, endLabelFor, selfLoop } from '../scripts/templates/route.mjs';
-import { loadStyle } from '../scripts/styles/index.mjs';
+import { side, straight, elbow, zRoute, uRoute, trunkRoute, spreadPorts, labelFor, boxDistanceToSection, endLabelFor, selfLoop } from '../skills/i-cant-draw/scripts/templates/route.mjs';
+import { loadStyle } from '../skills/i-cant-draw/scripts/styles/index.mjs';
 
 const quiet = loadStyle('quiet');
 const box = { x: 0, y: 0, width: 100, height: 60 };

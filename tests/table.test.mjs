@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { loadStyle, STYLE_NAMES } from '../scripts/styles/index.mjs';
-import { flowLayout } from '../scripts/templates/flow.mjs';
-import { draw } from '../scripts/render/draw.mjs';
-import { checkCollisions } from '../scripts/collision-check.mjs';
+import { loadStyle, STYLE_NAMES } from '../skills/i-cant-draw/scripts/styles/index.mjs';
+import { flowLayout } from '../skills/i-cant-draw/scripts/templates/flow.mjs';
+import { draw } from '../skills/i-cant-draw/scripts/render/draw.mjs';
+import { checkCollisions } from '../skills/i-cant-draw/scripts/collision-check.mjs';
 
 const spec = {
   template: 'flow',

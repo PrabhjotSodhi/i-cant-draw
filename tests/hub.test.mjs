@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
-import { hubLayout } from '../scripts/templates/hub.mjs';
-import { assertLayout } from '../scripts/layout-contract.mjs';
-import { loadStyle } from '../scripts/styles/index.mjs';
-import { draw } from '../scripts/render/draw.mjs';
+import { hubLayout } from '../skills/i-cant-draw/scripts/templates/hub.mjs';
+import { assertLayout } from '../skills/i-cant-draw/scripts/layout-contract.mjs';
+import { loadStyle } from '../skills/i-cant-draw/scripts/styles/index.mjs';
+import { draw } from '../skills/i-cant-draw/scripts/render/draw.mjs';
 
 const quiet = loadStyle('quiet');
 const spec = JSON.parse(readFileSync(new URL('./fixtures/hub-deployment.json', import.meta.url)));
@@ -68,9 +68,9 @@ describe('hubLayout: centre and stacks', () => {
   });
 });
 
-import { boxDistanceToSection } from '../scripts/templates/route.mjs';
-import { draw } from '../scripts/render/draw.mjs';
-import { checkCollisions } from '../scripts/collision-check.mjs';
+import { boxDistanceToSection } from '../skills/i-cant-draw/scripts/templates/route.mjs';
+import { draw } from '../skills/i-cant-draw/scripts/render/draw.mjs';
+import { checkCollisions } from '../skills/i-cant-draw/scripts/collision-check.mjs';
 
 describe('hubLayout: routes and labels', () => {
   const routed = hubLayout(spec, quiet);
@@ -118,7 +118,7 @@ describe('hubLayout edge cases', () => {
   });
 });
 
-import { lintLayout } from '../scripts/layout-lint.mjs';
+import { lintLayout } from '../skills/i-cant-draw/scripts/layout-lint.mjs';
 
 describe('hubLayout: review fixes', () => {
   const hubSpec = (slots, extraEdges = []) => {

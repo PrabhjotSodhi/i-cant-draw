@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { checkCollisions } from '../scripts/collision-check.mjs';
+import { checkCollisions } from '../skills/i-cant-draw/scripts/collision-check.mjs';
 
 describe('checkCollisions', () => {
   it('ignores overlaps that share an owner (text inside its own node)', () => {

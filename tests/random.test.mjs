@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { seededRandom, hashSpec } from '../scripts/render/random.mjs';
+import { seededRandom, hashSpec } from '../skills/i-cant-draw/scripts/render/random.mjs';
 
 describe('seededRandom', () => {
   it('repeats for the same seed', () => {

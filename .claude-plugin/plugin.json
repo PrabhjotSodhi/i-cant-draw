@@ -13,21 +13,5 @@
     "hand-drawn",
     "design-docs",
     "docs"
-  ],
-  "userConfig": {
-    "style": {
-      "type": "string",
-      "title": "Diagram style",
-      "description": "crayon is coloured pencil. riso is a two-ink print. whiteboard is marker. notebook is ink on dot-grid paper. watercolour is paint and pencil. quiet is plain, for formal documents. riso, whiteboard, notebook and watercolour use fonts that come with macOS.",
-      "options": [
-        "crayon",
-        "riso",
-        "whiteboard",
-        "notebook",
-        "watercolour",
-        "quiet"
-      ],
-      "default": "crayon"
-    }
-  }
+  ]
 }

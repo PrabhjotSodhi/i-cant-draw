@@ -5,7 +5,7 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
 
-const renderScript = fileURLToPath(new URL('../scripts/render.mjs', import.meta.url));
+const renderScript = fileURLToPath(new URL('../skills/i-cant-draw/scripts/render.mjs', import.meta.url));
 const fixturePath = fileURLToPath(new URL('./fixtures/flow-components.json', import.meta.url));
 const render = (...args) => spawnSync(process.execPath, [renderScript, ...args], { encoding: 'utf-8' });
 

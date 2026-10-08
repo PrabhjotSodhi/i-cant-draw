@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { assertLayout } from '../scripts/layout-contract.mjs';
+import { assertLayout } from '../skills/i-cant-draw/scripts/layout-contract.mjs';
 
 const valid = () => ({
   width: 400, height: 200,

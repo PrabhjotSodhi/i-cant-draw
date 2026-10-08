@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
-import { ICONS, ICON_BOX } from '../scripts/render/icons.mjs';
+import { ICONS, ICON_BOX } from '../skills/i-cant-draw/scripts/render/icons.mjs';
 
-const schema = JSON.parse(readFileSync(new URL('../references/spec-schema.json', import.meta.url)));
+const schema = JSON.parse(readFileSync(new URL('../skills/i-cant-draw/references/spec-schema.json', import.meta.url)));
 
 describe('ICONS', () => {
   it('covers every icon the schema allows', () => {

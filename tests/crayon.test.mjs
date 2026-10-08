@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
-import { loadStyle } from '../scripts/styles/index.mjs';
-import { hachureLines } from '../scripts/styles/crayon.mjs';
-import { hubLayout } from '../scripts/templates/hub.mjs';
-import { draw } from '../scripts/render/draw.mjs';
-import { checkCollisions } from '../scripts/collision-check.mjs';
-import { flowLayout } from '../scripts/templates/flow.mjs';
-import { convertToPng } from '../scripts/convert-png.mjs';
+import { loadStyle } from '../skills/i-cant-draw/scripts/styles/index.mjs';
+import { hachureLines } from '../skills/i-cant-draw/scripts/styles/crayon.mjs';
+import { hubLayout } from '../skills/i-cant-draw/scripts/templates/hub.mjs';
+import { draw } from '../skills/i-cant-draw/scripts/render/draw.mjs';
+import { checkCollisions } from '../skills/i-cant-draw/scripts/collision-check.mjs';
+import { flowLayout } from '../skills/i-cant-draw/scripts/templates/flow.mjs';
+import { convertToPng } from '../skills/i-cant-draw/scripts/convert-png.mjs';
 
 const crayon = loadStyle('crayon');
 const spec = JSON.parse(readFileSync(new URL('./fixtures/hub-deployment.json', import.meta.url)));

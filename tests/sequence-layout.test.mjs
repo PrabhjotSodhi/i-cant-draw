@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
-import { sequenceLayout } from '../scripts/sequence-layout.mjs';
-import { loadStyle } from '../scripts/styles/index.mjs';
-import { styleAsTheme } from '../scripts/render/draw.mjs';
+import { sequenceLayout } from '../skills/i-cant-draw/scripts/sequence-layout.mjs';
+import { loadStyle } from '../skills/i-cant-draw/scripts/styles/index.mjs';
+import { styleAsTheme } from '../skills/i-cant-draw/scripts/render/draw.mjs';
 
 const theme = styleAsTheme(loadStyle('quiet'));
 const spec = JSON.parse(readFileSync(new URL('../evals/upload-sequence/spec.json', import.meta.url)));

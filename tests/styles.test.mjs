@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { loadStyle } from '../scripts/styles/index.mjs';
+import { loadStyle } from '../skills/i-cant-draw/scripts/styles/index.mjs';
 
 const box = { x: 0, y: 0, width: 200, height: 80 };
 
