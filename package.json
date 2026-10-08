@@ -2,7 +2,7 @@
   "name": "i-cant-draw",
   "version": "0.5.0",
   "type": "module",
-  "description": "Hand-drawn architecture diagrams for people who cannot draw. A Claude Code plugin.",
+  "description": "Hand-drawn diagrams for people who cannot draw. An agent skill for Claude Code, Codex, Cursor, OpenCode and other coding agents.",
   "scripts": {
     "test": "vitest run",
     "eval": "node scripts/run-evals.mjs",

@@ -99,7 +99,7 @@ The same checkout design in every style. Name one when you ask.
 - **Database schema:** tables, their columns, and which columns link.
 - **Class diagram:** the classes in your code and how they relate.
 
-Claude picks the layout that fits what you asked.
+Your agent picks the layout that fits what you asked.
 
 ```
 > draw the database for an online shop
@@ -118,7 +118,7 @@ Claude picks the layout that fits what you asked.
 | | I Can't Draw | Mermaid | draw.io |
 | --- | --- | --- | --- |
 | You write | One sentence | Diagram code | Nothing. You drag boxes |
-| Layout | Lined up on a grid. An overlap fails the render, and Claude fixes it | Automatic, and gets tangled as it grows | By hand |
+| Layout | Lined up on a grid. An overlap fails the render, and your agent fixes it | Automatic, and gets tangled as it grows | By hand |
 | Look | Six hand-made styles | A few built-in themes | Stencils and shapes |
 | Change it later | Edit the spec. The rest of the picture stays put | Edit the code | Drag boxes again |
 

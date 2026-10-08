@@ -1,8 +1,8 @@
 # I Can't Draw
 
-I Can't Draw is a Claude Code plugin. A user types one plain sentence, such as "how does a RAG chatbot answer a question?", and gets a clean, hand-drawn-looking diagram as a PNG and an SVG, plus the JSON spec that made it.
+I Can't Draw is an agent skill. It works in Claude Code, Codex, Cursor, OpenCode and any other coding agent that reads skill folders. A user types one plain sentence, such as "how does a RAG chatbot answer a question?", and gets a clean, hand-drawn-looking diagram as a PNG and an SVG, plus the JSON spec that made it.
 
-Claude plans and the engine draws. Claude writes a small JSON spec and places each box on a grid or in a hub slot. Templates line everything up and route the lines. Styles only draw. The engine is plain Node.js ES modules with no build step.
+The agent plans and the engine draws. The agent writes a small JSON spec and places each box on a grid or in a hub slot. Templates line everything up and route the lines. Styles only draw. The engine is plain Node.js ES modules with no build step.
 
 ## Never compromise on
 
@@ -24,8 +24,8 @@ Claude plans and the engine draws. Claude writes a small JSON spec and places ea
 ## How it works
 
 ```
-sentence -> Claude writes a spec -> validate -> template (positions) -> style (SVG)
-         -> collision gate -> lint -> PNG at 2x -> Claude reviews the PNG -> fix once -> render again
+sentence -> agent writes a spec -> validate -> template (positions) -> style (SVG)
+         -> collision gate -> lint -> PNG at 2x -> agent reviews the PNG -> fix once -> render again
 ```
 
 - Text is measured in the font it is drawn in. Boxes, the collision gate and the PNG all use the same measured font files.
